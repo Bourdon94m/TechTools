@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from django.conf import settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +44,8 @@ INSTALLED_APPS = [
     'authentication', # Apps auth
     'Teamviewer', #Apps Client Teamviewer
     'rest_framework', # API 
+    'drf_yasg', # Documentation API
+
 ]
 
 MIDDLEWARE = [
@@ -59,7 +63,10 @@ ROOT_URLCONF = 'Ceciaa.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(settings.BASE_DIR, 'templates'),  # Vos templates personnalisés
+            os.path.join(settings.BASE_DIR, 'venv', 'Lib', 'site-packages', 'drf_yasg', 'templates'),  # Chemin vers les templates de drf-yasg
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
