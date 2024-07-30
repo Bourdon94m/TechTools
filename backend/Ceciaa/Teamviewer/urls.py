@@ -20,5 +20,6 @@ from . import views
 
 urlpatterns = [
     path('client-all', views.ClientListCreate.as_view(), name="all-client"),
+    path('client-create', views.ClientCreate.as_view(), name="create-client"),
     
 ]
