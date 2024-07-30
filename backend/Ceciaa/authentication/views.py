@@ -23,10 +23,18 @@ class CustomUserCreate(generics.ListCreateAPIView):
     fields = '__all__'
 
 # Get un user avec son Id
-class CustomUserById(generics.ListAPIView):
+class CustomUserById(generics.RetrieveAPIView):
     # Définit l'ensemble des objets à partir duquel filtrer
     queryset = CustomUser.objects.all()
     # Spécifie le sérialiseur pour formater les données
     serializer_class = UserSerializers
-    # Indique le champ à utiliser pour la recherche (ici, l'id)
-    lookup_field = "id"
+    # Indique le champ à utiliser pour la recherche (ici, la primary key)
+    lookup_field = "pk"
+
+class CustomeUserByFirstname(generics.RetrieveAPIView):
+    # Définit l'ensemble des objets à partir duquel filtrer
+    queryset = CustomUser.objects.all()
+    # Spécifie le sérialiseur pour formater les données
+    serializer_class = UserSerializers
+    # Indique le champ à utiliser pour la recherche (ici, le first_name)
+    lookup_field = "first_name"
