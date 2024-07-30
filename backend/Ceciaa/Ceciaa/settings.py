@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication', # Apps auth
+    'Teamviewer', #Apps Client Teamviewer
     'rest_framework', # API 
 ]
 
