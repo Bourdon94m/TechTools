@@ -13,7 +13,8 @@ class ClientListCreate(generics.ListAPIView):
     # Spécifie le sérialiseur à utiliser pour formater les données
     serializer_class = ClientSerializers
 
-class ClientCreate(generics.ListCreateAPIView):
+# Crée un User
+class ClientCreate(generics.CreateAPIView):
     # Définit l'ensemble des objets à retourner (tous les CustomUser)
     queryset = Client.objects.all()
     # Spécifie le sérialiseur à utiliser pour formater les données
