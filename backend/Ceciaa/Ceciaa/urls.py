@@ -25,8 +25,8 @@ schema_view = get_schema_view(
         title="API Service Info",
         default_version='v1',
         description="""
-        API permettant d'intéragir avec les données du backend vers mon front. 
-        Permet l'intégration des données plus facilement. API privée avec des données sensibles !
+        <b>API</b> permettant de faire des actions sur le site service Info de Ceciaa comme récuperer les client, 
+        et envoyer supprimer et modifier avec des params. API faite par <b><i>Bourdon94m</i></b>
         """,
         contact=openapi.Contact(email="matthieu.poulard@ceciaa.com"),
         license=openapi.License(name="BSD License"),
@@ -37,7 +37,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path("", include("authentication.urls")),
     path("", include("Teamviewer.urls")),

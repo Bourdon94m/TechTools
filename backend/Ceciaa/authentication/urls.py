@@ -19,8 +19,8 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('all-users/', views.CustomUserListCreate.as_view(), name="all-users"),
+    path('users/all', views.CustomUserListCreate.as_view(), name="all-users"),
     path('users/<int:pk>/', views.CustomUserById.as_view(), name="usersId"),
     path('users/<str:first_name>/', views.CustomeUserByFirstname.as_view(), name="usersFirstname"),
-    path('create-user', views.CustomUserCreate.as_view(), name="usersCreate"),
+    path('users/create', views.CustomUserCreate.as_view(), name="usersCreate"),
 ]
