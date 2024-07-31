@@ -15,7 +15,7 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex-shrink-0">
             {/* Remplacez ceci par votre logo */}
-            <span className="text-2xl font-bold">Logo</span>
+            <Link to="/" className="text-2xl font-bold">Logo</Link>
           </div>
 
           {/* Navigation pour grand écran */}

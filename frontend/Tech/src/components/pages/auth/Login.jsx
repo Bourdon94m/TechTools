@@ -14,7 +14,9 @@ import Navbar from "@/components/layout/Navbar"
 export function Login() {
   return (
     
-    <div className="flex items-center justify-center min-h-[100vh]">
+    <div>
+    <Navbar/>
+    <div className="flex items-center justify-center h-[80vh]">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
@@ -37,5 +39,6 @@ export function Login() {
         </CardFooter>
       </Card>
     </div>
+  </div>
   )
 }

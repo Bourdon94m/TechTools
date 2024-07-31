@@ -9,11 +9,13 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
+import Navbar from "@/components/layout/Navbar"
 export function RegisterForm() {
   return (
 
-    <div className="min-h-screen items-center justify-center flex">
+    <>
+    <Navbar/>
+    <div className="min-h-[80vh] items-center justify-center flex">
         <Card className="mx-auto max-w-sm">
         <CardHeader>
             <CardTitle className="text-xl">Sign Up</CardTitle>
@@ -62,5 +64,6 @@ export function RegisterForm() {
         </CardContent>
         </Card>
     </div> 
+    </>
   )
 }
