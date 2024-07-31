@@ -14,7 +14,7 @@ class CustomUserListCreate(generics.ListAPIView):
     serializer_class = UserSerializers
 
 # Crée un user avec la request POST
-class CustomUserCreate(generics.ListCreateAPIView):
+class CustomUserCreate(generics.CreateAPIView):
     # Définit l'ensemble des objets (utilisé pour la méthode GET)
     queryset = CustomUser.objects.all()
     # Spécifie le sérialiseur pour la création et la lecture

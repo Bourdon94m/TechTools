@@ -19,3 +19,11 @@ class ClientCreate(generics.CreateAPIView):
     queryset = Client.objects.all()
     # Spécifie le sérialiseur à utiliser pour formater les données
     serializer_class = ClientSerializers
+
+
+class ClientDeleteById(generics.DestroyAPIView):
+    queryset = Client.objects.all()
+
+    serializer_class = ClientSerializers
+
+    lookup_field = "pk"
