@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-#_o=vs=nkop_wf)cghlx-)%uqf=56-l8&p_rb&ezq%#*+(9by5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["192.168.6.46"]
 
 
 # Application definition
@@ -45,10 +45,15 @@ INSTALLED_APPS = [
     'Teamviewer', #Apps Client Teamviewer
     'rest_framework', # API 
     'drf_yasg', # Documentation API
+    'corsheaders', # CORS
+    'rest_framework_simplejwt' # JWT
+
 
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', # CORS need to be on top
+    'django.middleware.common.CommonMiddleware', # CORS 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -57,6 +62,24 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+# Configuration JWT
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+# A ne pas mettre en prod pour raison de sécurité
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 ROOT_URLCONF = 'Ceciaa.urls'
 

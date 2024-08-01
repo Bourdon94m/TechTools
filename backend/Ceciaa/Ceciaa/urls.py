@@ -19,6 +19,8 @@ from django.urls import path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -26,7 +28,7 @@ schema_view = get_schema_view(
         default_version='v1',
         description="""
         <b>API</b> permettant de faire des actions sur le site service Info de Ceciaa comme récuperer les client, 
-        et envoyer supprimer et modifier avec des params. API faite par <b><i>Bourdon94m</i></b>
+        et envoyer supprimer et modifier avec des params. API faite par <b><i>Matthieu Poulard</i></b>
         """,
         contact=openapi.Contact(email="matthieu.poulard@ceciaa.com"),
         license=openapi.License(name="BSD License"),
@@ -41,4 +43,6 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path("", include("authentication.urls")),
     path("", include("Teamviewer.urls")),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

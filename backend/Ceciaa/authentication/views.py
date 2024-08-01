@@ -2,6 +2,9 @@ from django.shortcuts import render
 from rest_framework import generics
 from .models import CustomUser
 from .serializers import UserSerializers
+from rest_framework.views import APIView #JWT
+from rest_framework.response import Response #JWT
+from rest_framework.permissions import IsAuthenticated #JWT
 # Create your views here.
 
 # CBV (Class-Based Views)
@@ -38,3 +41,10 @@ class CustomeUserByFirstname(generics.RetrieveAPIView):
     serializer_class = UserSerializers
     # Indique le champ à utiliser pour la recherche (ici, le first_name)
     lookup_field = "first_name"
+
+
+class ProtectedView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"message": "Vous etes authentifié!"})
