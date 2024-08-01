@@ -5,6 +5,10 @@ from .serializers import UserSerializers
 from rest_framework.views import APIView #JWT
 from rest_framework.response import Response #JWT
 from rest_framework.permissions import IsAuthenticated #JWT
+from rest_framework_simplejwt.views import TokenObtainPairView #JWT
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer #JWT
+from django.contrib.auth import authenticate
+from rest_framework import status # Rest Framework
 # Create your views here.
 
 # CBV (Class-Based Views)
@@ -43,8 +47,22 @@ class CustomeUserByFirstname(generics.RetrieveAPIView):
     lookup_field = "first_name"
 
 
-class ProtectedView(APIView):
-    permission_classes = [IsAuthenticated]
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    username_field = 'email'
 
-    def get(self, request):
-        return Response({"message": "Vous etes authentifié!"})
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        print("Received data:", request.data)
+        email = request.data.get('email')
+        password = request.data.get('password')
+        user = authenticate(request, email=email, password=password)
+        print("Authenticated user:", user)
+        if user is not None:
+            response = super().post(request, *args, **kwargs)
+            print("Response:", response.data)
+            return response
+        else:
+            print("Authentication failed")
+            return Response({"detail": "No active account found with the given credentials"}, status=status.HTTP_401_UNAUTHORIZED)
