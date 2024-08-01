@@ -1,20 +1,20 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { MenuIcon } from 'lucide-react'
 import { Link } from 'react-router-dom';
-import { Login } from '../pages/auth/Login'
-
+import { AuthContext } from '@/context/AuthContext'
 
 const Navbar = () => {
+  const { user, logout } = useContext(AuthContext); // Utilisez le contexte d'authentification
+
   return (
     <header className="bg-white shadow-md">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            {/* Remplacez ceci par votre logo */}
             <Link to="/" className="text-2xl font-bold">Logo</Link>
           </div>
 
@@ -35,9 +35,18 @@ const Navbar = () => {
               </NavigationMenuList>
             </NavigationMenu>
 
-            <Button variant="outline" className="font-medium">
-              <Link to="/login">Login</Link>
-            </Button>
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-sm font-medium">Connecté en tant que {user.email}</span>
+                <Button variant="outline" className="font-medium" onClick={logout}>
+                  Déconnexion
+                </Button>
+              </div>
+            ) : (
+              <Button variant="outline" className="font-medium">
+                <Link to="/login">Login</Link>
+              </Button>
+            )}
           </div>
 
           {/* Menu burger pour petit écran */}
@@ -54,7 +63,16 @@ const Navbar = () => {
                   <a href="#" className="text-base hover:underline">Teamviewer</a>
                   <a href="#" className="text-base hover:underline">Ticket</a>
                   <a href="#" className="text-base hover:underline">Outil 3</a>
-                  <Button className="mt-4">Login</Button>
+                  {user ? (
+                    <>
+                      <span className="text-sm font-medium">Connecté en tant que {user.email}</span>
+                      <Button className="mt-4" onClick={logout}>Déconnexion</Button>
+                    </>
+                  ) : (
+                    <Button className="mt-4">
+                      <Link to="/login">Login</Link>
+                    </Button>
+                  )}
                 </nav>
               </SheetContent>
             </Sheet>
