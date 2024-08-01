@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics
 from .models import CustomUser
+from django.contrib.auth.hashers import make_password # hashage 
 from .serializers import UserSerializers
 from rest_framework.views import APIView #JWT
 from rest_framework.response import Response #JWT
@@ -66,3 +67,15 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         else:
             print("Authentication failed")
             return Response({"detail": "No active account found with the given credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+
+class RegisterView(APIView):
+    def post(self, request):
+        serializer = UserSerializers(data=request.data)
+        if serializer.is_valid():
+            # Hachage du mot de passe avant de sauvegarder
+            validated_data = serializer.validated_data
+            validated_data['password'] = make_password(validated_data['password'])
+            user = serializer.create(validated_data)
+            return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

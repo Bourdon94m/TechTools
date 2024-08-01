@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-#_o=vs=nkop_wf)cghlx-)%uqf=56-l8&p_rb&ezq%#*+(9by5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.6.46"]
+ALLOWED_HOSTS = ["192.168.6.46", "127.0.0.1"]
 
 
 # Application definition
@@ -73,10 +73,8 @@ REST_FRAMEWORK = {
 # Configuration JWT
 from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'USER_ID_FIELD': 'email',
-    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+    'USER_ID_CLAIM': 'email',
 }
 
 # A ne pas mettre en prod pour raison de sécurité

@@ -24,4 +24,5 @@ urlpatterns = [
     path('users/<str:first_name>/', views.CustomeUserByFirstname.as_view(), name="usersFirstname"),
     path('users/create', views.CustomUserCreate.as_view(), name="usersCreate"),
     path('api/token/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/register/', views.RegisterView.as_view(), name='token_register'),
 ]
