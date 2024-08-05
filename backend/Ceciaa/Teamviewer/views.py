@@ -20,10 +20,17 @@ class ClientCreate(generics.CreateAPIView):
     # Spécifie le sérialiseur à utiliser pour formater les données
     serializer_class = ClientSerializers
 
+class ClientByID(generics.RetrieveUpdateAPIView):
+    # Je récupere tous les clients teamviewer
+    queryset = Client.objects.all()
+    # ma classe sérialisée
+    serializer_class = ClientSerializers
+    # ce qui me permet de get avec la pk
+    lookup_field = "firstname"
 
 class ClientDeleteById(generics.DestroyAPIView):
     queryset = Client.objects.all()
 
     serializer_class = ClientSerializers
 
-    lookup_field = "pk"
+    lookup_field = "id"

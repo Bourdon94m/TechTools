@@ -21,6 +21,8 @@ from . import views
 urlpatterns = [
     path('teamviewer/all', views.ClientListCreate.as_view(), name="all-client"),
     path('teamviewer/create', views.ClientCreate.as_view(), name="create-client"),
-    path('teamviewer/delete/<int:pk>', views.ClientDeleteById.as_view(), name="create-client"),
+    path('teamviewer/delete/<int:id>', views.ClientDeleteById.as_view()),
+    path('teamviewer/firstname/<str:firstname>', views.ClientByID.as_view()),
+
     
 ]

@@ -20,6 +20,7 @@ from . import views
 
 urlpatterns = [
     path('users/all', views.CustomUserListCreate.as_view(), name="all-users"),
+    path('users/delete/all', views.CustomUserDeleteAll.as_view(), name="delete-all-users"),
     path('users/<int:pk>/', views.CustomUserById.as_view(), name="usersId"),
     path('users/<str:first_name>/', views.CustomeUserByFirstname.as_view(), name="usersFirstname"),
     path('users/create', views.CustomUserCreate.as_view(), name="usersCreate"),

@@ -47,6 +47,15 @@ class CustomeUserByFirstname(generics.RetrieveAPIView):
     # Indique le champ à utiliser pour la recherche (ici, le first_name)
     lookup_field = "first_name"
 
+class CustomUserDeleteAll(APIView):
+    
+    # On override la méthode pour supprimer tous les Utilisateurs si ca part en couille
+    def delete(self, request):
+        CustomUser.objects.all().delete()
+        return Response({"message": "Tout les élements ont été supprimées !"},  status=status.HTTP_204_NO_CONTENT)
+    
+    
+
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     username_field = 'email'
