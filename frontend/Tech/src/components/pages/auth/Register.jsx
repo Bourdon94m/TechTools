@@ -113,9 +113,6 @@ export function RegisterForm() {
                 <Button type="submit" className="w-full">
                   Create an account
                 </Button>
-                <Button variant="outline" className="w-full">
-                  Sign up with GitHub
-                </Button>
               </div>
             </form>
             <div className="mt-4 text-center text-sm">
