@@ -2,6 +2,12 @@ from django.shortcuts import render
 from rest_framework import generics
 from .models import Client
 from .serializers import ClientSerializers
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+import subprocess
+import json
+
 # Create your views here.
 
 # CBV (Class-Based Views)
@@ -34,3 +40,18 @@ class ClientDeleteById(generics.DestroyAPIView):
     serializer_class = ClientSerializers
 
     lookup_field = "id"
+
+
+@require_http_methods(["POST","GET"])
+@csrf_exempt # Permet de ne pas avoir besoin du csrf token
+def open_teamviewer(request):
+    data = json.loads(request.body) # on récupére le body en format json
+    id_teamviewer = data.get('id') # on get id venant du body
+
+    try:
+        subprocess.Popen(f"C:\Program Files\TeamViewer\TeamViewer.exe --id {id_teamviewer}") # Ouvre teamviewer avec id
+        return JsonResponse({'message': 'TeamViewer lancé avec succès'}, status=200)
+    except Exception as e:
+        error_message = f"Erreur lors du lancement de TeamViewer: {str(e)}"
+        print(error_message)  # Pour le log du serveur
+        return JsonResponse({"error": error_message}, status=500)

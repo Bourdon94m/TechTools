@@ -23,6 +23,7 @@ urlpatterns = [
     path('teamviewer/create', views.ClientCreate.as_view(), name="create-client"),
     path('teamviewer/delete/<int:id>', views.ClientDeleteById.as_view()),
     path('teamviewer/firstname/<str:firstname>', views.ClientByID.as_view()),
+    path('open-teamviewer/', views.open_teamviewer, name='open_teamviewer'),
 
     
 ]
