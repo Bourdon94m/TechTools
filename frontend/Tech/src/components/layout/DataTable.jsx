@@ -11,6 +11,7 @@ import {
 
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "../ui/checkbox";
+import { Textarea } from "../ui/textarea";
 import React from 'react';
 import {
   flexRender,
@@ -109,7 +110,7 @@ export function DataTable({ columns, data }) {
             <Label htmlFor="commentaire" className="text-right">
               Commentaire
             </Label>
-            <Input id="commentaire" className="col-span-3" />
+            <textarea className="w-full"/>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox id="sub" />

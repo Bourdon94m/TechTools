@@ -17,9 +17,19 @@ const columns = [
     header: "ID Teamviewer"
   },
   {
-    accessorKey: "has_assistance",
-    header: "Sub"
-  }
+    accessorKey: "commentary",
+    header: "commentaire"
+  },
+  {
+    accessorKey: "has_teleassistance",
+    header: "Sub",
+    cell: ({ row }) => (
+      <div className={row.getValue("has_teleassistance") ? "text-green-600" : "text-red-600"}>
+        {row.getValue("has_teleassistance") ? "Oui" : "Non"}
+      </div>
+    ),
+  },
+  
 ];
 
 const Teamviewer = () => {

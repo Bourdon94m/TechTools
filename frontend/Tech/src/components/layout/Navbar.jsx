@@ -15,7 +15,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to="/" className="text-2xl font-bold">Logo</Link>
+            <Link to="/" className="text-2xl font-bold">TechTools</Link>
           </div>
 
           {/* Navigation pour grand écran */}
@@ -26,7 +26,7 @@ const Navbar = () => {
                   <NavigationMenuTrigger className="text-base font-medium">Tools</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[200px]">
-                      <li><NavigationMenuLink className="font-medium hover:cursor-pointer hover:underline">Teamviewer</NavigationMenuLink></li>
+                      <li><NavigationMenuLink className="font-medium hover:cursor-pointer hover:underline"><a href="/teamviewer">Teamviewer</a></NavigationMenuLink></li>
                       <li><NavigationMenuLink className="font-medium hover:cursor-pointer hover:underline">Ticket</NavigationMenuLink></li>
                       <li><NavigationMenuLink className="font-medium hover:cursor-pointer hover:underline">Outil 3</NavigationMenuLink></li>
                     </ul>
@@ -60,7 +60,7 @@ const Navbar = () => {
               <SheetContent side="right" className="w-[200px]">
                 <nav className="flex flex-col space-y-4 mt-4">
                   <h2 className="text-lg font-semibold mb-2">Tools</h2>
-                  <a href="#" className="text-base hover:underline">Teamviewer</a>
+                  <a href="/teamviewer" className="text-base hover:underline">Teamviewer</a>
                   <a href="#" className="text-base hover:underline">Ticket</a>
                   <a href="#" className="text-base hover:underline">Outil 3</a>
                   {user ? (

@@ -42,7 +42,7 @@ const LandingPage = () => {
                             <p>Connectez-vous aux postes distants en quelques clics pour un support efficace.</p>
                         </CardContent>
                         <CardFooter>
-                            <Button variant="outline">Accéder</Button>
+                            <Button variant="outline"><a href="/teamviewer">Accéder</a></Button>
                         </CardFooter>
                     </Card>
 
