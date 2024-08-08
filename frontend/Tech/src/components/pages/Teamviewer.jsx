@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { DataTable } from '../layout/DataTable';
 import Navbar from '../layout/Navbar';
+import { Button } from '../ui/button';
 const columns = [
   {
     accessorKey: "firstname",
@@ -22,13 +23,40 @@ const columns = [
   },
   {
     accessorKey: "has_teleassistance",
-    header: "Sub",
+    header: "Abonné",
     cell: ({ row }) => (
       <div className={row.getValue("has_teleassistance") ? "text-green-600" : "text-red-600"}>
         {row.getValue("has_teleassistance") ? "Oui" : "Non"}
       </div>
     ),
   },
+  {
+    header: "Ouvrir",
+    cell: ({ row }) => {
+      return (
+        <Button 
+          variant='outline'
+          onClick={() => {
+            // Ajoutez ici la logique pour ouvrir TeamViewer avec l'ID
+            const id = row.getValue("id_teamviewer");
+            
+            fetch('http://127.0.0.1:8000/open-teamviewer/', {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({"id": id})
+            }) 
+              
+            
+          }}
+        >
+          Ouvrir
+        </Button>
+      );
+    }
+  }
   
 ];
 
