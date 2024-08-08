@@ -35,13 +35,16 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 
-// TeamViewer colors
+// TeamViewer inspired color scheme
 const colors = {
-  primary: "#0a68ff",
-  secondary: "#1a1f25",
-  background: "#f0f3f5",
-  text: "#2a3134",
-  border: "#d9dfe3",
+  primary: "#0a68ff",       // Bleu vif pour les éléments principaux
+  secondary: "#005ede",     // Bleu plus foncé pour les éléments secondaires
+  background: "#f5f8fc",    // Fond très clair avec une teinte bleue
+  text: "#2a3134",          // Texte foncé pour un bon contraste
+  border: "#bcd5f7",        // Bordure bleue claire
+  accent: "#00a2ff",        // Bleu clair pour les accents
+  hover: "#e6f0ff",         // Couleur de survol légère
+  buttonText: "#ffffff",    // Texte blanc pour les boutons
 };
 
 export function ConfirmationDialog({ isOpen, onClose, onConfirm, userData }) {
