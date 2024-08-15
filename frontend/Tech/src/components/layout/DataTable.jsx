@@ -33,7 +33,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/components/ui/use-toast";
 import React, { useState } from "react";
 
 // TeamViewer inspired color scheme
@@ -51,8 +51,8 @@ const colors = {
 export function DataTable({ columns, data }) {
   const [filtering, setFiltering] = useState("");
   const [columnVisibility, setColumnVisibility] = useState({});
-  const [isSubscribed, setIsSubscribed] = useState(false)
-  const { toast } = useToast()
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const { toast } = useToast();
 
   const table = useReactTable({
     data,
@@ -169,10 +169,10 @@ export function DataTable({ columns, data }) {
                   />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox 
-                  id="sub" 
-                  checked={isSubscribed}
-                  onCheckedChange={setIsSubscribed}
+                  <Checkbox
+                    id="sub"
+                    checked={isSubscribed}
+                    onCheckedChange={setIsSubscribed}
                   />
                   <Label htmlFor="sub" style={{ color: colors.text }}>
                     Abonné
@@ -183,95 +183,107 @@ export function DataTable({ columns, data }) {
                 <Button
                   type="submit"
                   style={{ backgroundColor: colors.primary, color: "white" }}
-
                   // * Handle data sended to the backend for create our user with verification
-                  onClick={() => {                    
+                  onClick={() => {
                     try {
                       // Fonction utilitaire pour récupérer en toute sécurité la valeur d'un élément
                       const safeGetValue = (id) => {
                         const element = document.getElementById(id);
                         if (!element) {
                           console.log(`Élément avec l'ID '${id}' non trouvé`);
-                          return '';
+                          return "";
                         }
                         return element.value.trim();
                       };
-                      
+
                       // Fonction de validation pour id_teamviewer
                       const isValidTeamViewerId = (id) => {
                         const trimmedId = id.trim();
                         return trimmedId.length <= 13;
-                      }
+                      };
 
                       // Récupération sécurisée des valeurs
-                      const id_teamviewer = safeGetValue('identifiant');
-                      const prenom = safeGetValue('prenom');
-                      const nom = safeGetValue('nom');
-                      const email = safeGetValue('email');
-                      const commentaire = safeGetValue('commentaire');
-                      
-                      console.log("Valeurs :", { id_teamviewer, prenom, nom, email, commentaire, isSubscribed });
-                  
+                      const id_teamviewer = safeGetValue("identifiant");
+                      const prenom = safeGetValue("prenom");
+                      const nom = safeGetValue("nom");
+                      const email = safeGetValue("email");
+                      const commentaire = safeGetValue("commentaire");
+
+                      console.log("Valeurs :", {
+                        id_teamviewer,
+                        prenom,
+                        nom,
+                        email,
+                        commentaire,
+                        isSubscribed,
+                      });
+
                       // Vérification des champs obligatoires et de la validité de id_teamviewer
-                      if (!id_teamviewer || !isValidTeamViewerId(id_teamviewer) || !prenom || !nom) {
-                        
+                      if (
+                        !id_teamviewer ||
+                        !isValidTeamViewerId(id_teamviewer) ||
+                        !prenom ||
+                        !nom
+                      ) {
                         toast({
                           variant: "destructive",
                           title: "Champs Manquants !",
-                          description: 'Veuillez remplir tous les champs obligatoires correctement. L\'identifiant TeamViewer doit etre valide !',
-                        })
+                          description:
+                            "Veuillez remplir tous les champs obligatoires correctement. L'identifiant TeamViewer doit etre valide !",
+                        });
                       } else {
                         console.log("Formulaire valide, prêt à être soumis");
-                        
+
                         fetch("http://127.0.0.1:8000/teamviewer/create", {
                           method: "POST",
                           headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
                           },
                           body: JSON.stringify({
-                            "firstname": prenom,
-                            "lastname": nom,
-                            "id_teamviewer": id_teamviewer,
-                            "commentary": commentaire,
-                            "email": email,
-                            "has_teleassistance": isSubscribed,
-                            "sub_start_date": null,
-                            "sub_end_date": null
-                          })
+                            firstname: prenom,
+                            lastname: nom,
+                            id_teamviewer: id_teamviewer,
+                            commentary: commentaire,
+                            email: email,
+                            has_teleassistance: isSubscribed,
+                            sub_start_date: null,
+                            sub_end_date: null,
+                          }),
                         })
-                        .then(response => {
-                          if (!response.ok) {
-                            throw new Error('Erreur réseau ou serveur');
-                          }
-                          return response.json();
-                        })
-                        .then(data => {
-                          let today = new Date
-                          console.log('Succès:', data);
-                          toast({
-                            title: "Client crée avec succées",
-                            description: "le client a été crée le " + today.toLocaleDateString("fr-FR")
+                          .then((response) => {
+                            if (!response.ok) {
+                              throw new Error("Erreur réseau ou serveur");
+                            }
+                            return response.json();
                           })
-                          // Ajoutez ici le code pour fermer le dialogue ou mettre à jour l'interface utilisateur
-                        })
-                        .catch((error) => {
-                          console.error('Erreur:', error);
-                          toast({
-                            variant: "destructive",
-                            title: "Erreur",
-                            description: error,
+                          .then((data) => {
+                            let today = new Date();
+                            console.log("Succès:", data);
+                            toast({
+                              title: "Client crée avec succées",
+                              description:
+                                "le client a été crée le " +
+                                today.toLocaleDateString("fr-FR"),
+                            });
+                            // Ajoutez ici le code pour fermer le dialogue ou mettre à jour l'interface utilisateur
                           })
-                        });
+                          .catch((error) => {
+                            console.error("Erreur:", error);
+                            toast({
+                              variant: "destructive",
+                              title: "Erreur",
+                              description: error,
+                            });
+                          });
                       }
-                    }
-                    catch (error) {
+                    } catch (error) {
                       console.error("Une erreur s'est produite :", error);
                       toast({
                         variant: "destructive",
                         title: "Erreur",
                         description: error,
-                      })
+                      });
                     }
                   }}
                 >
