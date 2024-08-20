@@ -1,14 +1,13 @@
-import React from 'react';
-import LandingPage from './components/pages/LandingPage';
-import { Login } from './components/pages/auth/Login';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { RegisterForm } from './components/pages/auth/Register';
-import { AuthContext, AuthProvider } from './context/AuthContext';
+import LandingPage from "./components/pages/LandingPage";
+import { Login } from "./components/pages/auth/Login";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { RegisterForm } from "./components/pages/auth/Register";
+import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "@/components/ui/toaster"; // Importez le composant Toaster
-import Teamviewer from './components/pages/Teamviewer';
+import Teamviewer from "./components/pages/Teamviewer";
+import LandingDashboard from "@/components/pages/Dashboard/LandingDashboard";
 
 function App() {
-
   return (
     <AuthProvider>
       <Router>
@@ -17,13 +16,11 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/teamviewer" element={<Teamviewer />} />
+          <Route path="/dashboard" element={<LandingDashboard />} />
         </Routes>
-        <Toaster/> {/* permet d'utiliser les toast 😋 */}
+        <Toaster /> {/* permet d'utiliser les toast 😋 */}
       </Router>
     </AuthProvider>
-
-    
-
   );
 }
 

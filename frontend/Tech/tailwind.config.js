@@ -4,10 +4,10 @@ const { nextui } = require("@nextui-org/react");
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{js,jsx}',
-    './components/**/*.{js,jsx}',
-    './app/**/*.{js,jsx}',
-    './src/**/*.{js,jsx}',
+    "./pages/**/*.{js,jsx}",
+    "./components/**/*.{js,jsx}",
+    "./app/**/*.{js,jsx}",
+    "./src/**/*.{js,jsx}",
   ],
   prefix: "",
   theme: {
@@ -16,6 +16,7 @@ module.exports = {
       padding: "2rem",
       screens: {
         "2xl": "1400px",
+        xxs: "540px", // min-width
       },
     },
     extend: {
@@ -75,5 +76,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")]
-}
+  plugins: [require("tailwindcss-animate")],
+};

@@ -73,7 +73,9 @@ const LandingPage = () => {
               </p>
             </CardContent>
             <CardFooter>
-              <Button variant="outline">Accéder</Button>
+              <Button variant="outline">
+                <a href="/dashboard">Accéder</a>
+              </Button>
             </CardFooter>
           </Card>
 
