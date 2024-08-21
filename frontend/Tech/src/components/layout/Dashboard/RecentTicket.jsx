@@ -17,7 +17,7 @@ const RecentTicket = ({ title, author, isOpen, date, avatarUrl }) => {
           <span>{date}</span>
         </div>
       </div>
-      <Badge variant={isOpen ? "success" : "secondary"}>
+      <Badge variant={isOpen ? "primary" : "destructive"}>
         {isOpen ? "Ouvert" : "Fermé"}
       </Badge>
     </div>
