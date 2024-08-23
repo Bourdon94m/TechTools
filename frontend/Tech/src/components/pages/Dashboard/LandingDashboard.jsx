@@ -1,6 +1,10 @@
 import React from "react";
 import Sidebar from "../../layout/Dashboard/Sidebar";
-import { ChartCard } from "@/components/layout/Dashboard/ChartCards";
+import {
+  BarChartCard,
+  LineChartCard,
+  AreaChartCard,
+} from "@/components/layout/Dashboard/ChartCards";
 import RecentTicket from "@/components/layout/Dashboard/RecentTicket";
 
 function getFormattedDateToday() {
@@ -20,17 +24,17 @@ const LandingDashboard = () => {
       {/* Main content */}
       <div className="flex-1 p-3">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <ChartCard
+          <BarChartCard
             className="rounded-lg p-4 h-full"
             classContainerName="h-48 md:h-64"
-            title="Tickets Ouvert"
+            title="Tickets Ouverts"
           />
-          <ChartCard
+          <LineChartCard
             className="rounded-lg p-4 h-full"
             classContainerName="h-48 md:h-64"
             title="Tickets En Cours"
           />
-          <ChartCard
+          <AreaChartCard
             className="rounded-lg p-4 h-full"
             classContainerName="h-48 md:h-64"
             title="Tickets Fermées"
