@@ -29,9 +29,9 @@ class WeeklyTicketStatsTest(TestCase):
     def test_get_current_week_stats(self):
         WeeklyTicketStats.increment_ticket_count()
         stats = WeeklyTicketStats.get_current_week_stats()
-        print(f"Current week stats: {stats.week_start}, Count: {stats.ticket_count}")
-        self.assertEqual(stats.week_start, self.start_of_week)
-        self.assertEqual(stats.ticket_count, 1)
+        print(f"Current week stats: {stats}")
+        self.assertEqual(stats['week_start'], self.start_of_week.isoformat())
+        self.assertEqual(stats['ticket_count'], 1)
 
     def test_get_current_month_stats(self):
         for i in range(5):

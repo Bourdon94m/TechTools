@@ -19,7 +19,7 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:  # Utiliser pk au lieu de ticket_id pour la vérification
             WeeklyTicketStats.increment_ticket_count()
-        super().save(*args, **kwargs)  # Correction de *kwargs
+        super().save(*args, **kwargs)  
 
     def __str__(self):
         return f"Ticket {self.ticket_id}: {self.title}"
@@ -31,19 +31,44 @@ class WeeklyTicketStats(models.Model):
     week_start = models.DateField(unique=True)
     ticket_count = models.IntegerField(default=0)
 
-    
-    @classmethod
-    def increment_ticket_count(cls):
-        current_week_stats = cls.get_current_week_stats()
-        current_week_stats.ticket_count += 1
-        current_week_stats.save()
-
     @classmethod
     def get_current_week_stats(cls):
         today = timezone.now().date()
         start_of_week = today - timedelta(days=today.weekday())
-        stats, _ = cls.objects.get_or_create(week_start=start_of_week)
-        return stats
+        end_of_week = start_of_week + timedelta(days=6)
+        
+        # Récupérer les statistiques pour chaque jour de la semaine
+        stats = cls.objects.filter(
+            week_start__gte=start_of_week,
+            week_start__lte=end_of_week
+        ).order_by('week_start')
+        
+        daily_stats = []
+        for day in range(7):
+            current_day = start_of_week + timedelta(days=day)
+            day_stats = stats.filter(week_start=current_day).first()
+            daily_stats.append({
+                'date': current_day.isoformat(),
+                'ticket_count': day_stats.ticket_count if day_stats else 0
+            })
+        
+        return {
+            'week_number': start_of_week.isocalendar()[1],
+            'daily_stats': daily_stats,
+            'week_start': start_of_week.isoformat(),
+            'week_end': end_of_week.isoformat()
+        }
+
+    @classmethod
+    def increment_ticket_count(cls):
+        today = timezone.now().date()
+        
+        # Vérifiez si une entrée pour le jour en cours existe
+        day_stats, created = cls.objects.get_or_create(week_start=today)
+        
+        # Incrémentez le ticket_count
+        day_stats.ticket_count += 1
+        day_stats.save()
 
     @classmethod
     def get_current_month_stats(cls):

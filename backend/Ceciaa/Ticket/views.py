@@ -4,6 +4,7 @@ from rest_framework import generics
 from .models import Ticket, WeeklyTicketStats
 from rest_framework.views import APIView
 from .serializers import TicketSerializers
+
 # Create your views here.
 
 class TicketList(generics.ListAPIView):
@@ -32,6 +33,8 @@ class TicketById(generics.ListAPIView):
 class CreateTicket(generics.CreateAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializers
+
+    
     
 
 

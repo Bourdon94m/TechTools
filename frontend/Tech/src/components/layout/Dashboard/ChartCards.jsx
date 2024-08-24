@@ -1,7 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Bar,
-  BarChart,
   CartesianGrid,
   LabelList,
   XAxis,
@@ -10,9 +8,10 @@ import {
   ResponsiveContainer,
   LineChart,
   AreaChart,
+  BarChart,
+  Bar,
   Area,
 } from "recharts";
-import { TrendingUp } from "lucide-react";
 
 import {
   Card,
@@ -30,15 +29,6 @@ import {
 
 import { cn } from "@/lib/utils";
 
-const chartData = [
-  { month: "Jan", desktop: 186 },
-  { month: "Feb", desktop: 305 },
-  { month: "Mar", desktop: 237 },
-  { month: "Apr", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "Jun", desktop: 214 },
-];
-
 const chartConfig = {
   desktop: {
     label: "Desktop",
@@ -49,88 +39,133 @@ const chartConfig = {
   },
 };
 
-export function BarChartCard({ className, classContainerName, title }) {
+export function BarChartCard({ className, title }) {
+  const [chartData, setChartData] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch("/ticket/stats/current-week/")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const daysOfWeek = [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ];
+        const formattedData = daysOfWeek.map((day) => ({
+          day,
+          desktop: data.ticket_count,
+        }));
+        setChartData(formattedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching chart data:", error);
+        setError(error.message);
+      });
+  }, []);
+
   return (
     <Card className={cn("overflow-hidden", className)}>
       <CardHeader className="p-4">
         <CardTitle className="text-lg">{title}</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardDescription>test</CardDescription>
       </CardHeader>
       <CardContent className="p-0">
-        <ChartContainer
-          className={cn("w-full", classContainerName)}
-          config={chartConfig}
-        >
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart
-              data={chartData}
-              layout="vertical"
-              margin={{
-                top: 10,
-                right: 16,
-                left: 0,
-                bottom: 0,
-              }}
-            >
-              <CartesianGrid horizontal={false} />
-              <YAxis
-                dataKey="month"
-                type="category"
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-                tickFormatter={(value) => value.slice(0, 3)}
-                hide
-              />
-              <XAxis dataKey="desktop" type="number" hide />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent indicator="line" />}
-              />
-              <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4}>
-                <LabelList
-                  dataKey="month"
-                  position="insideLeft"
-                  offset={8}
-                  className="fill-[--color-label]"
-                  fontSize={12}
+        {error ? (
+          <div className="text-red-500">Error: {error}</div>
+        ) : (
+          <ChartContainer className="w-full" config={chartConfig}>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={chartData}
+                layout="vertical"
+                margin={{
+                  top: 10,
+                  right: 16,
+                  left: 0,
+                  bottom: 0,
+                }}
+              >
+                <CartesianGrid horizontal={false} />
+                <YAxis
+                  dataKey="day"
+                  type="category"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  tickFormatter={(value) => value.slice(0, 3)}
+                  hide
                 />
-                <LabelList
-                  dataKey="desktop"
-                  position="right"
-                  offset={8}
-                  className="fill-foreground"
-                  fontSize={12}
+                <XAxis dataKey="desktop" type="number" hide />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent indicator="line" />}
                 />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartContainer>
+                <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4}>
+                  <LabelList
+                    dataKey="day"
+                    position="insideLeft"
+                    offset={8}
+                    className="fill-[--color-label]"
+                    fontSize={12}
+                  />
+                  <LabelList
+                    dataKey="desktop"
+                    position="right"
+                    offset={8}
+                    className="fill-foreground"
+                    fontSize={12}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        )}
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm mt-10">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Showing tickets for the current week
         </div>
       </CardFooter>
     </Card>
   );
 }
 
-export function LineChartCard({ className, classContainerName, title }) {
+export function LineChartCard({ className, title }) {
+  const [chartData, setChartData] = useState([]);
+
+  useEffect(() => {
+    fetch("/ticket/stats/current-week/")
+      .then((response) => response.json())
+      .then((data) => {
+        const formattedData = data.map((item) => ({
+          month: item.week_start, // Adjust this according to your data structure
+          desktop: item.ticket_count,
+        }));
+        setChartData(formattedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching chart data:", error);
+      });
+  }, []);
+
   return (
     <Card className={cn("overflow-hidden", className)}>
       <CardHeader className="p-4">
-        <CardTitle className="text-lg bg-">{title}</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle className="text-lg">{title}</CardTitle>
+        <CardDescription>test</CardDescription>
       </CardHeader>
       <CardContent className="p-0">
-        <ChartContainer
-          className={cn("w-full", classContainerName)}
-          config={chartConfig}
-        >
+        <ChartContainer className="w-full" config={chartConfig}>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart
               data={chartData}
@@ -154,7 +189,7 @@ export function LineChartCard({ className, classContainerName, title }) {
                 content={<ChartTooltipContent hideLabel />}
               />
               <Line
-                type="natural"
+                type="monotone"
                 dataKey="desktop"
                 stroke="var(--color-desktop)"
                 strokeWidth={2}
@@ -170,31 +205,40 @@ export function LineChartCard({ className, classContainerName, title }) {
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm mt-10">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Showing ticket trend for the current week
         </div>
       </CardFooter>
     </Card>
   );
 }
 
-export function AreaChartCard({ className, classContainerName, title }) {
+export function AreaChartCard({ className, title }) {
+  const [chartData, setChartData] = useState([]);
+
+  useEffect(() => {
+    fetch("/ticket/stats/current-week/")
+      .then((response) => response.json())
+      .then((data) => {
+        const formattedData = data.map((item) => ({
+          month: item.week_start, // Adjust this according to your data structure
+          desktop: item.ticket_count,
+        }));
+        setChartData(formattedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching chart data:", error);
+      });
+  }, []);
+
   return (
     <Card className={cn("overflow-hidden", className)}>
       <CardHeader className="p-4">
         <CardTitle className="text-lg">{title}</CardTitle>
-        <CardDescription>
-          Showing total visitors for the last 6 months
-        </CardDescription>
+        <CardDescription>test</CardDescription>
       </CardHeader>
       <CardContent className="p-0">
-        <ChartContainer
-          className={cn("w-full", classContainerName)}
-          config={chartConfig}
-        >
+        <ChartContainer className="w-full" config={chartConfig}>
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart
               data={chartData}
@@ -215,31 +259,32 @@ export function AreaChartCard({ className, classContainerName, title }) {
               />
               <ChartTooltip
                 cursor={false}
-                content={<ChartTooltipContent indicator="dot" hideLabel />}
+                content={<ChartTooltipContent hideLabel />}
               />
               <Area
-                type="linear"
+                type="monotone"
                 dataKey="desktop"
-                fill="var(--color-desktop)"
-                fillOpacity={0.4}
                 stroke="var(--color-desktop)"
+                fill="var(--color-desktop)"
+                strokeWidth={2}
+                dot={{
+                  fill: "var(--color-desktop)",
+                }}
+                activeDot={{
+                  r: 6,
+                }}
               />
             </AreaChart>
           </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm mt-10">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              January - June 2024
-            </div>
-          </div>
+      <CardFooter className="flex-col items-start gap-2 text-sm mt-10">
+        <div className="leading-none text-muted-foreground">
+          Showing ticket trend for the current week
         </div>
       </CardFooter>
     </Card>
   );
 }
+
+export default { BarChartCard, AreaChartCard, LineChartCard };
