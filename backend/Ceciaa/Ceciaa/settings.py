@@ -33,23 +33,21 @@ ALLOWED_HOSTS = ["192.168.6.46", "127.0.0.1"]
 # Application definition
 
 INSTALLED_APPS = [
-    
-    'admin_material.apps.AdminMaterialDashboardConfig', # Adminpanel
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'authentication', # Apps auth
-    'Teamviewer', #Apps Client Teamviewer
-    'rest_framework', # API 
-    'drf_yasg', # Documentation API
-    'corsheaders', # CORS
-    'rest_framework_simplejwt' # JWT
-
-
+    'authentication',  # Apps auth
+    'Teamviewer',  # Apps Client Teamviewer
+    'rest_framework',  # API 
+    'drf_yasg',  # Documentation API
+    'corsheaders',  # CORS
+    'Ticket',  # Ticket Apps
+    'rest_framework_simplejwt',  # JWT
 ]
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', # CORS need to be on top
