@@ -28,7 +28,9 @@ const SidebarContent = ({ collapsed, setCollapsed }) => {
     >
       <div className="flex items-center justify-between mb-8">
         {!collapsed && (
-          <span className="text-lg font-semibold">Beta Tester</span>
+          <span className="text-lg font-semibold">
+            <a href="/">Beta Tester</a>
+          </span>
         )}
         <Badge variant={"destructive"}>Admin</Badge>
       </div>

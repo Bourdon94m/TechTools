@@ -32,7 +32,7 @@ import { cn } from "@/lib/utils";
 const chartConfig = {
   desktop: {
     label: "Desktop",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--chart-3))",
   },
   label: {
     color: "hsl(var(--background))",
@@ -41,10 +41,12 @@ const chartConfig = {
 
 export function BarChartCard({ className, title }) {
   const [chartData, setChartData] = useState([]);
+  const [actualStartWeek, setActualStartWeek] = useState("");
+  const [endOfActualWeek, setEndOfActualWeek] = useState("");
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("/ticket/stats/current-week/")
+    fetch("http://127.0.0.1:8000/ticket/stats/current-week/")
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -52,20 +54,25 @@ export function BarChartCard({ className, title }) {
         return response.json();
       })
       .then((data) => {
-        const daysOfWeek = [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday",
+        const actualStartWeek = data.week_start;
+        const endOfActualWeek = data.week_end;
+
+        // Assurez-vous que les données sont dans le format attendu
+        const formattedData = [
+          { day: "Lundi", desktop: data.daily_stats[0].ticket_count },
+          { day: "Mardi", desktop: data.daily_stats[1].ticket_count },
+          { day: "Mercredi", desktop: data.daily_stats[2].ticket_count },
+          { day: "Jeudi", desktop: data.daily_stats[3].ticket_count },
+          { day: "Vendredi", desktop: data.daily_stats[4].ticket_count },
+          { day: "Samedi", desktop: data.daily_stats[5].ticket_count },
+          { day: "Dimanche", desktop: data.daily_stats[6].ticket_count },
         ];
-        const formattedData = daysOfWeek.map((day) => ({
-          day,
-          desktop: data.ticket_count,
-        }));
+        // Set data into some useful useState
         setChartData(formattedData);
+        setActualStartWeek(actualStartWeek);
+        setEndOfActualWeek(endOfActualWeek);
+        console.log("Le formatted data que tu veux mettre : ", formattedData);
+        console.log("Le chartdata qu'il ya: ", chartData);
       })
       .catch((error) => {
         console.error("Error fetching chart data:", error);
@@ -77,7 +84,9 @@ export function BarChartCard({ className, title }) {
     <Card className={cn("overflow-hidden", className)}>
       <CardHeader className="p-4">
         <CardTitle className="text-lg">{title}</CardTitle>
-        <CardDescription>test</CardDescription>
+        <CardDescription>
+          Semaine du {actualStartWeek} au {endOfActualWeek}{" "}
+        </CardDescription>
       </CardHeader>
       <CardContent className="p-0">
         {error ? (
@@ -142,19 +151,42 @@ export function BarChartCard({ className, title }) {
 
 export function LineChartCard({ className, title }) {
   const [chartData, setChartData] = useState([]);
+  const [actualStartWeek, setActualStartWeek] = useState("");
+  const [endOfActualWeek, setEndOfActualWeek] = useState("");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("/ticket/stats/current-week/")
-      .then((response) => response.json())
+    fetch("http://127.0.0.1:8000/ticket/stats/current-week/")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => {
-        const formattedData = data.map((item) => ({
-          month: item.week_start, // Adjust this according to your data structure
-          desktop: item.ticket_count,
-        }));
+        const actualStartWeek = data.week_start;
+        const endOfActualWeek = data.week_end;
+
+        // Assurez-vous que les données sont dans le format attendu
+        const formattedData = [
+          { day: "Lundi", desktop: data.daily_stats[0].ticket_count },
+          { day: "Mardi", desktop: data.daily_stats[1].ticket_count },
+          { day: "Mercredi", desktop: data.daily_stats[2].ticket_count },
+          { day: "Jeudi", desktop: data.daily_stats[3].ticket_count },
+          { day: "Vendredi", desktop: data.daily_stats[4].ticket_count },
+          { day: "Samedi", desktop: data.daily_stats[5].ticket_count },
+          { day: "Dimanche", desktop: data.daily_stats[6].ticket_count },
+        ];
+        // Set data into some useful useState
         setChartData(formattedData);
+        setActualStartWeek(actualStartWeek);
+        setEndOfActualWeek(endOfActualWeek);
+        console.log("Le formatted data que tu veux mettre : ", formattedData);
+        console.log("Le chartdata qu'il ya: ", chartData);
       })
       .catch((error) => {
         console.error("Error fetching chart data:", error);
+        setError(error.message);
       });
   }, []);
 
@@ -162,7 +194,9 @@ export function LineChartCard({ className, title }) {
     <Card className={cn("overflow-hidden", className)}>
       <CardHeader className="p-4">
         <CardTitle className="text-lg">{title}</CardTitle>
-        <CardDescription>test</CardDescription>
+        <CardDescription>
+          Semaine du {actualStartWeek} au {endOfActualWeek}{" "}
+        </CardDescription>
       </CardHeader>
       <CardContent className="p-0">
         <ChartContainer className="w-full" config={chartConfig}>
@@ -215,19 +249,42 @@ export function LineChartCard({ className, title }) {
 
 export function AreaChartCard({ className, title }) {
   const [chartData, setChartData] = useState([]);
+  const [actualStartWeek, setActualStartWeek] = useState("");
+  const [endOfActualWeek, setEndOfActualWeek] = useState("");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("/ticket/stats/current-week/")
-      .then((response) => response.json())
+    fetch("http://127.0.0.1:8000/ticket/stats/current-week/")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => {
-        const formattedData = data.map((item) => ({
-          month: item.week_start, // Adjust this according to your data structure
-          desktop: item.ticket_count,
-        }));
+        const actualStartWeek = data.week_start;
+        const endOfActualWeek = data.week_end;
+
+        // Assurez-vous que les données sont dans le format attendu
+        const formattedData = [
+          { day: "Lundi", desktop: data.daily_stats[0].ticket_count },
+          { day: "Mardi", desktop: data.daily_stats[1].ticket_count },
+          { day: "Mercredi", desktop: data.daily_stats[2].ticket_count },
+          { day: "Jeudi", desktop: data.daily_stats[3].ticket_count },
+          { day: "Vendredi", desktop: data.daily_stats[4].ticket_count },
+          { day: "Samedi", desktop: data.daily_stats[5].ticket_count },
+          { day: "Dimanche", desktop: data.daily_stats[6].ticket_count },
+        ];
+        // Set data into some useful useState
         setChartData(formattedData);
+        setActualStartWeek(actualStartWeek);
+        setEndOfActualWeek(endOfActualWeek);
+        console.log("Le formatted data que tu veux mettre : ", formattedData);
+        console.log("Le chartdata qu'il ya: ", chartData);
       })
       .catch((error) => {
         console.error("Error fetching chart data:", error);
+        setError(error.message);
       });
   }, []);
 
@@ -235,7 +292,9 @@ export function AreaChartCard({ className, title }) {
     <Card className={cn("overflow-hidden", className)}>
       <CardHeader className="p-4">
         <CardTitle className="text-lg">{title}</CardTitle>
-        <CardDescription>test</CardDescription>
+        <CardDescription>
+          Semaine du {actualStartWeek} au {endOfActualWeek}{" "}
+        </CardDescription>
       </CardHeader>
       <CardContent className="p-0">
         <ChartContainer className="w-full" config={chartConfig}>
