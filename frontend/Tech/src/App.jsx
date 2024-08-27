@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "@/components/ui/toaster"; // Importez le composant Toaster
 import Teamviewer from "./components/pages/Teamviewer";
 import LandingDashboard from "@/components/pages/Dashboard/LandingDashboard";
+import TicketPage from "@/components/pages/Dashboard/TicketPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/teamviewer" element={<Teamviewer />} />
           <Route path="/dashboard" element={<LandingDashboard />} />
+          <Route path="/tickets" element={<TicketPage />} />
         </Routes>
         <Toaster /> {/* permet d'utiliser les toast 😋 */}
       </Router>

@@ -1,5 +1,4 @@
 // tailwind.config.js
-const { nextui } = require("@nextui-org/react");
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
@@ -69,10 +68,19 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        wiggle: {
+          "0%, 100%": { transform: "rotate(-3deg)" },
+          "50%": { transform: "rotate(3deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        wiggle: "wiggle 0.3s ease-in-out infinite",
+      },
+      fontFamily: {
+        MrRobot: ["Bungee Tint", "sans-serif"],
+        merriweather: ["Montserrat", "sans-serif"],
       },
     },
   },

@@ -17,7 +17,7 @@ function getFormattedDateToday() {
 }
 const LandingDashboard = () => {
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-background">
+    <div className="flex flex-col md:flex-row min-h-screen bg-background font-merriweather ">
       {/* Sidebar */}
       <Sidebar className="w-full md:w-64 flex-shrink-0" />
 
@@ -27,17 +27,17 @@ const LandingDashboard = () => {
           <BarChartCard
             className="rounded-lg p-4 h-full"
             classContainerName="h-48 md:h-64"
-            title="Tickets Ouverts"
+            title="Tickets de cet semaine"
           />
           <LineChartCard
             className="rounded-lg p-4 h-full"
             classContainerName="h-48 md:h-64"
-            title="Tickets En Cours"
+            title="Tickets de cet semaine"
           />
           <AreaChartCard
             className="rounded-lg p-4 h-full"
             classContainerName="h-48 md:h-64"
-            title="Tickets Fermées"
+            title="Tickets de cet semaine"
           />
         </div>
         <div className="h-[30rem] flex-col justify-between w-full  space-y-4 mt-4 bg-">

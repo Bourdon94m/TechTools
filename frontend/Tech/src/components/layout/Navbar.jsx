@@ -17,12 +17,12 @@ const Navbar = () => {
   const { user, logout } = useContext(AuthContext); // Utilisez le contexte d'authentification
 
   return (
-    <header className="bg-white shadow-md">
+    <header className="bg-white shadow-md font-merriweather">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to="/" className="text-2xl font-bold">
+            <Link to="/" className="text-2xl font-MrRobot">
               TechTools
             </Link>
           </div>
@@ -60,19 +60,15 @@ const Navbar = () => {
 
             {user ? (
               <div className="flex items-center space-x-4">
-                <span className="text-sm font-medium">
+                <span className="text-sm font-body-400">
                   Connecté en tant que {user.email}
                 </span>
-                <Button
-                  variant="outline"
-                  className="font-medium"
-                  onClick={logout}
-                >
+                <Button variant="outline" onClick={logout}>
                   Déconnexion
                 </Button>
               </div>
             ) : (
-              <Button variant="outline" className="font-medium">
+              <Button variant="outline" className="font-merriweather">
                 <Link to="/login">Login</Link>
               </Button>
             )}
@@ -87,7 +83,7 @@ const Navbar = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[200px]">
-                <nav className="flex flex-col space-y-4 mt-4">
+                <nav className="flex flex-col space-y-4 mt-4 font-merriweather">
                   <h2 className="text-lg font-semibold mb-2">Tools</h2>
                   <a href="/teamviewer" className="text-base hover:underline">
                     Teamviewer
@@ -100,7 +96,7 @@ const Navbar = () => {
                   </a>
                   {user ? (
                     <>
-                      <span className="text-sm font-medium">
+                      <span className="text-sm font-merriweather">
                         Connecté en tant que {user.email}
                       </span>
                       <Button className="mt-4" onClick={logout}>
@@ -108,7 +104,7 @@ const Navbar = () => {
                       </Button>
                     </>
                   ) : (
-                    <Button className="mt-4">
+                    <Button className="mt-4 font-merriweather">
                       <Link to="/login">Login</Link>
                     </Button>
                   )}

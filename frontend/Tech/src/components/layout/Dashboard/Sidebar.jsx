@@ -16,7 +16,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
 
 const SidebarContent = ({ collapsed, setCollapsed }) => {
   return (
@@ -26,13 +25,12 @@ const SidebarContent = ({ collapsed, setCollapsed }) => {
         collapsed ? "items-center" : "p-4 space-y-4"
       )}
     >
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-center mb-8">
         {!collapsed && (
-          <span className="text-lg font-semibold">
-            <a href="/">Beta Tester</a>
+          <span className="text-2xl font-MrRobot">
+            <a href="/">Ticket Panel</a>
           </span>
         )}
-        <Badge variant={"destructive"}>Admin</Badge>
       </div>
 
       <nav className="space-y-2 flex-1">
@@ -102,7 +100,7 @@ const Sidebar = ({ className }) => {
             <Menu className="h-4 w-4" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+        <SheetContent side="left" className="w-[300px] sm:w-[300px]">
           <SidebarContent collapsed={false} setCollapsed={() => {}} />
         </SheetContent>
       </Sheet>

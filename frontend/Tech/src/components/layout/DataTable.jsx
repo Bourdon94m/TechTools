@@ -70,7 +70,7 @@ export function DataTable({ columns, data }) {
 
   return (
     <div className="space-y-4" style={{ padding: "20px", borderRadius: "8px" }}>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center font-merriweather">
         <Input
           placeholder="Filtrer tous les champs..."
           value={filtering}
@@ -208,15 +208,6 @@ export function DataTable({ columns, data }) {
                       const nom = safeGetValue("nom");
                       const email = safeGetValue("email");
                       const commentaire = safeGetValue("commentaire");
-
-                      console.log("Valeurs :", {
-                        id_teamviewer,
-                        prenom,
-                        nom,
-                        email,
-                        commentaire,
-                        isSubscribed,
-                      });
 
                       // Vérification des champs obligatoires et de la validité de id_teamviewer
                       if (

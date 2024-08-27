@@ -21,12 +21,12 @@ const LandingPage = () => {
       {/* Title */}
 
       <Navbar />
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-12 font-merriweather">
         <section className="text-center mb-16">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-4">
-            Service Informatique Ceciaa
+          <h1 className="scroll-m-20 text-4xl font-MrRobot tracking-tight lg:text-5xl mb-4">
+            TechTools
           </h1>
-          <p className="text-xl text-muted-foreground mb-8">
+          <p className="text-xl font-merriweather text-muted-foreground mb-8">
             Plateforme d'outils et d'automatisation pour simplifier nos tâches
             quotidiennes.
           </p>
@@ -36,7 +36,7 @@ const LandingPage = () => {
           </Button>
         </section>
 
-        <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-16">
+        <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-16 font-merriweather">
           <Card>
             <CardHeader>
               <Monitor className="h-8 w-8 mb-2" />
@@ -97,7 +97,7 @@ const LandingPage = () => {
           </Card>
         </section>
 
-        <section className="text-center">
+        <section className="text-center font-merriweather">
           <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0 mb-4">
             Prêt à améliorer votre productivité ?
           </h2>

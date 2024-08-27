@@ -385,7 +385,7 @@ const Teamviewer = () => {
     <>
       <Navbar />
       <div className="container mx-auto py-10">
-        <h1 className="text-2xl font-bold mb-4">Liste des clients</h1>
+        <h1 className="text-2xl mb-4">Liste des clients</h1>
         <DataTable columns={columns} data={clients} />
       </div>
     </>

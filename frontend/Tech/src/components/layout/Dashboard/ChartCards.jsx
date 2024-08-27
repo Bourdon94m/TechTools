@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 
 const chartConfig = {
   desktop: {
-    label: "Desktop",
+    label: "Ticket",
     color: "hsl(var(--chart-3))",
   },
   label: {
