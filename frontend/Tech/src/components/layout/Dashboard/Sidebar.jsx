@@ -39,7 +39,7 @@ const SidebarContent = ({ collapsed, setCollapsed }) => {
             <TooltipTrigger asChild>
               <Button variant="ghost" className="w-full justify-start">
                 <LayoutDashboard className="h-5 w-5 mr-2" />
-                {!collapsed && "Dashboard"}
+                {!collapsed && <a href="dashboard">Dashboard</a>}
               </Button>
             </TooltipTrigger>
             {collapsed && (
@@ -51,7 +51,7 @@ const SidebarContent = ({ collapsed, setCollapsed }) => {
             <TooltipTrigger asChild>
               <Button variant="ghost" className="w-full justify-start">
                 <Ticket className="h-5 w-5 mr-2" />
-                {!collapsed && "Tickets"}
+                {!collapsed && <a href="tickets">tickets</a>}
               </Button>
             </TooltipTrigger>
             {collapsed && <TooltipContent side="right">Tickets</TooltipContent>}

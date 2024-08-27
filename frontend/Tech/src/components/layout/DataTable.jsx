@@ -78,7 +78,7 @@ export function DataTable({ columns, data }) {
           className="max-w-sm"
           style={{ borderColor: colors.border }}
         />
-        <div className="space-x-2">
+        <div className="ml-5 gap-3 flex">
           <Dialog>
             <DialogTrigger asChild>
               <Button

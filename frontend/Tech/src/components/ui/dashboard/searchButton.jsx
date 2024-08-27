@@ -4,19 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 
 const SearchButton = ({ placeholder, className, onSearch }) => {
-  const [search, setSearch] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const handleInputChange = (e) => {
-    const value = e.targer.value;
-    setSearch(value);
-    console.log(value);
-    onSearch(value);
+  const onWriting = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    // Si vous voulez appeler onSearch à chaque changement
+    if (onSearch) {
+      onSearch(value);
+    }
   };
 
   return (
-    <form className={`relative flex items-center  ${className}`}>
+    <div className={`relative flex items-center ${className}`}>
       <Button
-        onChange={handleInputChange}
         variant="ghost"
         size="icon"
         className="absolute left-0 z-10 hover:bg-transparent focus:bg-transparent active:bg-transparent"
@@ -24,12 +25,14 @@ const SearchButton = ({ placeholder, className, onSearch }) => {
         <Search className="h-4 w-4" />
       </Button>
       <Input
+        onChange={onWriting}
+        value={searchTerm}
         name="search"
         className="pl-10 bg-[#FBFBFB]"
         type="text"
         placeholder={placeholder}
       />
-    </form>
+    </div>
   );
 };
 

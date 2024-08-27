@@ -1,12 +1,9 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "@/components/layout/Dashboard/Sidebar";
 import NotificationButt from "@/components/ui/dashboard/notification-button";
 import NewTicketButton from "@/components/ui/dashboard/newTicket-button";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import SearchButton from "@/components/ui/dashboard/searchButton";
 import TicketCard from "@/components/ui/dashboard/ticket-card";
-
 import {
   Select,
   SelectContent,
@@ -16,32 +13,76 @@ import {
 } from "@/components/ui/select";
 
 const TicketPage = () => {
+  const [tickets, setTickets] = useState([
+    {
+      ticketID: "Ticket# 2023-CS123",
+      date: "Posted at 12:45 AM",
+      title: "How to deposit money to my portal?",
+      content:
+        "Je n'arrive pas a faire des beaux design au secours help me je sais pas ce qui m'arrive !!",
+      color: "green",
+    },
+    {
+      ticketID: "Ticket# 2024-CS111",
+      date: "Posted at 16:12 AM",
+      title: "Need assistance for mac?",
+      content:
+        "J'ai un soucis avec mon mac car je suis débile, pouvez vous venire me sauver ?",
+      color: "orange",
+    },
+    {
+      ticketID: "Ticket# 2022-CS042",
+      date: "Posted at 09:22 AM",
+      title: "Cannot log into admin panel",
+      content:
+        "I cant log with my actual login, i think someone juste hacked me and have access to my email!!! urgent",
+      color: "green",
+    },
+    // Ajoutez d'autres tickets ici...
+  ]);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredTickets, setFilteredTickets] = useState(tickets);
+
+  useEffect(() => {
+    const results = tickets.filter(
+      (ticket) =>
+        ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ticket.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ticket.ticketID.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setFilteredTickets(results);
+  }, [searchTerm, tickets]);
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+  };
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen font-merriweather">
-      {/* Sidebar */}
       <Sidebar className="w-full md:w-64 flex-shrink-0" />
-      {/* Main content */}
       <div className="flex-grow">
-        <div className="h-28 w-full merriweather flex items-center justify-between px-4 md:px-8 lg:px-16">
-          <div className="flex-grow" />
-          <h1 className="text-primary text-2xl md:text-3xl font-bold">
+        <div className="h-28 w-full merriweather flex items-center justify-between px-8">
+          <div className="w-1/3"></div> {/* Espace vide à gauche */}
+          <h1 className="text-primary text-3xl  font-bold w-1/3 text-center">
             Welcome!
           </h1>
-          <div className="flex-grow flex justify-end">
-            <NotificationButt className="ml-4 md:ml-8 lg:ml-16" />
+          <div className="w-1/3 flex justify-end">
+            <NotificationButt />
           </div>
         </div>
-        <div className="h-20 w-full flex justify-between items-center">
+        <div className="h-20 w-[80%] flex justify-start items-center">
           <h1 className="text-3xl ml-8 font-bold">Tickets</h1>
-          <NewTicketButton />
         </div>
-        <div className="h-[6rem] w-full flex items-center justify-between lg:justify-center lg:gap-10">
+        <div className="h-[6rem] w-full flex items-center justify-between">
           <SearchButton
-            className={"w-[40%] ml-8 lg:w-[30%]  :placeholder:text-xl "}
-            placeholder={"Search for Ticket ..."}
+            className="w-[40%] ml-8"
+            placeholder="Search for Ticket"
+            onSearch={handleSearch}
           />
           <Select>
-            <SelectTrigger className="w-[40%] mr-8 lg:w-[30%]">
+            <SelectTrigger className="w-[40%] mr-8">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -51,33 +92,23 @@ const TicketPage = () => {
             </SelectContent>
           </Select>
         </div>
-        {/* Updated grid for TicketCards */}
-        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6 px-8 py-6">
-          <TicketCard
-            ticketID="Ticket# 2023-CS123"
-            title="How to deposit money to my portal ?"
-            date="Posted at 12:45 AM"
-            content="Je n'arrive pas a faire des beaux design au secours help me je sais pas ce qui m'arrive !!"
-            status="unresolved"
-            color="red"
-          />
-          <TicketCard
-            ticketID="Ticket# 2023-CS124"
-            title="Issue with account login"
-            date="Posted at 14:30 PM"
-            content="I'm having trouble logging into my account. Can someone please help?"
-            status="in progress"
-            color="orange"
-          />
-          <TicketCard
-            ticketID="Ticket# 2023-CS125"
-            title="Request for feature enhancement"
-            date="Posted at 09:15 AM"
-            content="I would like to suggest a new feature for the dashboard. Can we discuss this?"
-            status="open"
-            color="green"
-          />
-          {/* You can add more TicketCard components here as needed */}
+        <div className="grid gap-6 p-8">
+          {filteredTickets.length > 0 ? (
+            filteredTickets.map((ticket, index) => (
+              <TicketCard
+                key={index}
+                ticketID={ticket.ticketID}
+                date={ticket.date}
+                title={ticket.title}
+                content={ticket.content}
+                color={ticket.color}
+              />
+            ))
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              Aucun ticket ne correspond à votre recherche.
+            </div>
+          )}
         </div>
       </div>
     </div>
