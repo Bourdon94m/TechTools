@@ -12,7 +12,7 @@ const TicketCard = ({ className, ticketID, date, title, content, color }) => {
         )}
       >
         <div className="flex items-center p-4">
-          <div className={"w-6 h-6 rounded-full bg-green-400"}></div>
+          <div className={`w-6 h-6 rounded-full bg-${color}-500`}></div>
           <div className="flex-grow">
             <h3 className="text-lg ml-6 font-bold text-[#2E2C34]">
               {ticketID}

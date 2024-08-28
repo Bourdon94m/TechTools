@@ -28,7 +28,7 @@ const TicketPage = () => {
       title: "Need assistance for mac?",
       content:
         "J'ai un soucis avec mon mac car je suis débile, pouvez vous venire me sauver ?",
-      color: "orange",
+      color: "green",
     },
     {
       ticketID: "Ticket# 2022-CS042",
@@ -36,27 +36,44 @@ const TicketPage = () => {
       title: "Cannot log into admin panel",
       content:
         "I cant log with my actual login, i think someone juste hacked me and have access to my email!!! urgent",
-      color: "green",
+      color: "red",
     },
     // Ajoutez d'autres tickets ici...
   ]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredTickets, setFilteredTickets] = useState(tickets);
+  const [filterStatus, setFilterStatus] = useState("all");
 
-  useEffect(() => {
-    const results = tickets.filter(
-      (ticket) =>
+  // Fonction pour filtrer les tickets par statut et terme de recherche
+  const filterTickets = () => {
+    return tickets.filter((ticket) => {
+      const matchesSearch =
         ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         ticket.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ticket.ticketID.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+        ticket.ticketID.toLowerCase().includes(searchTerm.toLowerCase());
 
-    setFilteredTickets(results);
-  }, [searchTerm, tickets]);
+      const matchesStatus =
+        filterStatus === "all" ||
+        (filterStatus === "open" && ticket.color === "green") ||
+        (filterStatus === "closed" && ticket.color !== "green");
+
+      return matchesSearch && matchesStatus;
+    });
+  };
+
+  // Effet pour mettre à jour les tickets filtrés
+  useEffect(() => {
+    setFilteredTickets(filterTickets());
+  }, [searchTerm, filterStatus, tickets]);
 
   const handleSearch = (term) => {
     setSearchTerm(term);
+  };
+
+  // Gestionnaire pour le changement de statut
+  const handleStatusChange = (value) => {
+    setFilterStatus(value);
   };
 
   return (
@@ -64,7 +81,7 @@ const TicketPage = () => {
       <Sidebar className="w-full md:w-64 flex-shrink-0" />
       <div className="flex-grow">
         <div className="h-28 w-full merriweather flex items-center justify-between px-8">
-          <div className="w-1/3"></div> {/* Espace vide à gauche */}
+          <div className="w-1/3"></div>
           <h1 className="text-primary text-3xl  font-bold w-1/3 text-center">
             Welcome!
           </h1>
@@ -81,14 +98,14 @@ const TicketPage = () => {
             placeholder="Search for Ticket"
             onSearch={handleSearch}
           />
-          <Select>
+          <Select onValueChange={handleStatusChange}>
             <SelectTrigger className="w-[40%] mr-8">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">Ouvert</SelectItem>
-              <SelectItem value="dark">En cours</SelectItem>
-              <SelectItem value="system">Fermée</SelectItem>
+              <SelectItem value="all">Tous</SelectItem>
+              <SelectItem value="open">Ouvert</SelectItem>
+              <SelectItem value="closed">Fermé</SelectItem>
             </SelectContent>
           </Select>
         </div>
