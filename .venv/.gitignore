@@ -1,0 +1,45 @@
+# Environnement virtuel
+venv/
+env/
+.venv/
+
+# Fichiers Python compilés
+*.pyc
+__pycache__/
+
+# Fichiers de base de données
+*.sqlite3
+
+# Fichiers de configuration locaux
+.env
+*.env
+
+# Fichiers de log
+*.log
+
+# Fichiers de médias et statiques (à ajuster selon votre configuration)
+media/
+static/
+
+# Fichiers de l'IDE (ajustez selon votre IDE)
+.vscode/
+.idea/
+
+# Fichiers temporaires du système
+.DS_Store
+Thumbs.db
+
+# Fichiers de dépendances
+node_modules/
+
+# Fichiers de build
+build/
+dist/
+
+# Fichiers de couverture de tests
+htmlcov/
+.coverage
+
+# Fichiers de migration Django (optionnel, selon votre workflow)
+# */migrations/*.py
+# !*/migrations/__init__.py

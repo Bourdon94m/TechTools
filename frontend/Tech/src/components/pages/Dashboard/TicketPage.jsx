@@ -23,12 +23,20 @@ const TicketPage = () => {
       color: "green",
     },
     {
+      ticketID: "Ticket# 2023-CS123",
+      date: "Posted at 12:45 AM",
+      title: "How to deposit money to my portal?",
+      content:
+        "Je n'arrive pas a faire des beaux design au secours help me je sais pas ce qui m'arrive !!",
+      color: "green",
+    },
+    {
       ticketID: "Ticket# 2024-CS111",
       date: "Posted at 16:12 AM",
       title: "Need assistance for mac?",
       content:
         "J'ai un soucis avec mon mac car je suis débile, pouvez vous venire me sauver ?",
-      color: "green",
+      color: "red",
     },
     {
       ticketID: "Ticket# 2022-CS042",
