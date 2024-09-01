@@ -27,8 +27,7 @@ schema_view = get_schema_view(
         title="API Service Info",
         default_version='v1',
         description="""
-        <b>API</b> permettant de faire des actions sur le site service Info de Ceciaa comme récuperer les client, 
-        et envoyer supprimer et modifier avec des params. API faite par <b><i>Matthieu Poulard</i></b>
+        <b>API</b> Permettant de faire des intéractions avec le site TechTools. API faite par <b><i>Matthieu Poulard</i></b>
         """,
         contact=openapi.Contact(email="matthieu.poulard@ceciaa.com"),
         license=openapi.License(name="BSD License"),

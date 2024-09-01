@@ -3,10 +3,14 @@ from django.utils import timezone
 from django.db.models import Sum, Count
 from datetime import timedelta
 
+
+
+def date_format_mois_jour_annee():
+    return timezone.now().strftime("%d/%m/%Y")
+
 class Ticket(models.Model):
     STATUS_CHOICES = [
         ('open', 'Ouvert'),
-        ('in_progress', 'En cours'),
         ('closed', 'Fermé'),
     ]
 
@@ -14,15 +18,17 @@ class Ticket(models.Model):
     title = models.CharField(max_length=255, blank=False, null=False)
     content = models.TextField(help_text="Contenu principal du ticket", blank=False, null=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
-    creation_date = models.DateTimeField(auto_now_add=True)
+    creation_date = models.CharField(max_length=10, default=date_format_mois_jour_annee)
 
     def save(self, *args, **kwargs):
         if not self.pk:  # Utiliser pk au lieu de ticket_id pour la vérification
             WeeklyTicketStats.increment_ticket_count()
+            self.creation_date = timezone.now()
+
         super().save(*args, **kwargs)  
 
     def __str__(self):
-        return f"Ticket {self.ticket_id}: {self.title}"
+        return f"Ticket {self.ticket_id}: {self.title} created the {self.creation_date.strftime('%Y-%m-%d')}"
 
     class Meta:
         ordering = ['-creation_date']
