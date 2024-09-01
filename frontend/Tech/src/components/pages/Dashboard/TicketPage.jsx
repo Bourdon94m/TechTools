@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "@/components/layout/Dashboard/Sidebar";
 import NotificationButt from "@/components/ui/dashboard/notification-button";
-import NewTicketButton from "@/components/ui/dashboard/newTicket-button";
+import { NewTicketButton } from "/src/components/ui/dashboard/newTicket-button.jsx";
 import SearchButton from "@/components/ui/dashboard/searchButton";
 import TicketCard from "@/components/ui/dashboard/ticket-card";
 import {
@@ -13,41 +13,33 @@ import {
 } from "@/components/ui/select";
 
 const TicketPage = () => {
-  const [tickets, setTickets] = useState([
-    {
-      ticketID: "Ticket# 2023-CS123",
-      date: "Posted at 12:45 AM",
-      title: "How to deposit money to my portal?",
-      content:
-        "Je n'arrive pas a faire des beaux design au secours help me je sais pas ce qui m'arrive !!",
-      color: "green",
-    },
-    {
-      ticketID: "Ticket# 2023-CS123",
-      date: "Posted at 12:45 AM",
-      title: "How to deposit money to my portal?",
-      content:
-        "Je n'arrive pas a faire des beaux design au secours help me je sais pas ce qui m'arrive !!",
-      color: "green",
-    },
-    {
-      ticketID: "Ticket# 2024-CS111",
-      date: "Posted at 16:12 AM",
-      title: "Need assistance for mac?",
-      content:
-        "J'ai un soucis avec mon mac car je suis débile, pouvez vous venire me sauver ?",
-      color: "red",
-    },
-    {
-      ticketID: "Ticket# 2022-CS042",
-      date: "Posted at 09:22 AM",
-      title: "Cannot log into admin panel",
-      content:
-        "I cant log with my actual login, i think someone juste hacked me and have access to my email!!! urgent",
-      color: "red",
-    },
-    // Ajoutez d'autres tickets ici...
-  ]);
+  const [tickets, setTickets] = useState([]);
+
+  useEffect(() => {
+    const fetchTicketFromApi = () => {
+      fetch("http://127.0.0.1:8000/ticket/all")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          // Transformer les données reçues
+          const formattedTickets = data.map((ticket) => ({
+            ticketID: ticket.ticket_id || "",
+            date: ticket.creation_date || "",
+            title: ticket.title || "",
+            content: ticket.content || "",
+            status: ticket.status,
+          }));
+          setTickets(formattedTickets);
+          console.log("Tickets formatés :", formattedTickets);
+        });
+    };
+    fetchTicketFromApi();
+  }, []);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredTickets, setFilteredTickets] = useState(tickets);
@@ -58,13 +50,12 @@ const TicketPage = () => {
     return tickets.filter((ticket) => {
       const matchesSearch =
         ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ticket.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ticket.ticketID.toLowerCase().includes(searchTerm.toLowerCase());
+        ticket.content.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesStatus =
         filterStatus === "all" ||
-        (filterStatus === "open" && ticket.color === "green") ||
-        (filterStatus === "closed" && ticket.color !== "green");
+        (filterStatus === "open" && ticket.status === "open") ||
+        (filterStatus === "closed" && ticket.status != "open");
 
       return matchesSearch && matchesStatus;
     });
@@ -97,8 +88,13 @@ const TicketPage = () => {
             <NotificationButt />
           </div>
         </div>
-        <div className="h-20 w-[80%] flex justify-start items-center">
+        <div className="h-20 w-full  flex justify-between items-center">
           <h1 className="text-3xl ml-8 font-bold">Tickets</h1>
+          <NewTicketButton
+            className={
+              "bg-[#7b4bff] text-white mr-8 flex items-center space-x-2 rounded-md px-4 py-2 transition-colors duration-300 hover:bg-[#6b3bff]"
+            }
+          />
         </div>
         <div className="h-[6rem] w-full flex items-center justify-between">
           <SearchButton
@@ -118,15 +114,14 @@ const TicketPage = () => {
           </Select>
         </div>
         <div className="grid gap-6 p-8">
-          {filteredTickets.length > 0 ? (
+          {filteredTickets.length > 0 ? ( // Just check if mini 1 ticket exist
             filteredTickets.map((ticket, index) => (
               <TicketCard
+                ticketID={`#${ticket.ticketID} | ${ticket.title}`}
                 key={index}
-                ticketID={ticket.ticketID}
                 date={ticket.date}
-                title={ticket.title}
                 content={ticket.content}
-                color={ticket.color}
+                color={ticket.status === "open" ? "green" : "red"} // This mfucking color is bugging tf
               />
             ))
           ) : (

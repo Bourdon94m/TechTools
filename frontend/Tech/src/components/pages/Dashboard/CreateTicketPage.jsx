@@ -6,8 +6,54 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { CreateTicketButton } from "@/components/ui/dashboard/newTicket-button";
+import { useToast } from "@/components/ui/use-toast";
 
 const CreateTicketPage = () => {
+  const { toast } = useToast();
+
+  const createTicketToDB = () => {
+    let title = document.getElementById("title").value;
+    let content = document.getElementById("content").value;
+
+    const ticketData = { title, content };
+
+    fetch("http://127.0.0.1:8000/ticket/new-ticket", {
+      method: "POST", // Pour envoyer
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(ticketData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `La requête a échoué avec le statut : ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Succès:", data);
+        // Message de succées
+        toast({
+          title: "Succées",
+          description: "Ticket crée !",
+          variant: "primary",
+        });
+      })
+      .catch((error) => {
+        console.error("Erreur:", error);
+        // messages
+        toast({
+          title: "Erreur",
+          description: "Impossible de récupérer les données de l'utilisateur",
+          variant: "destructive",
+        });
+      });
+
+    console.log("Données envoyées:", ticketData);
+  };
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen font-merriweather">
       {/* Top page */}
@@ -50,7 +96,7 @@ const CreateTicketPage = () => {
                 Titre :
               </label>
               <Input
-                id="titre"
+                id="title"
                 placeholder="Jaws Mise a jour ..."
                 className="w-full"
               />
@@ -73,7 +119,10 @@ const CreateTicketPage = () => {
             </div>
 
             <div className="flex justify-end">
-              <CreateTicketButton className="px-3 py-2 text-sm md:text-base" />
+              <CreateTicketButton
+                onClick={createTicketToDB}
+                className="px-3 py-2 text-sm md:text-base"
+              />
             </div>
           </div>
         </div>
