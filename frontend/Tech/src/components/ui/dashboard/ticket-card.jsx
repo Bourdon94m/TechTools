@@ -2,6 +2,8 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { Check, PenSquare } from "lucide-react";
 
+
+
 const TicketCard = ({ className, ticketID, date, title, content, color }) => {
   return (
     <div className="">
@@ -12,7 +14,7 @@ const TicketCard = ({ className, ticketID, date, title, content, color }) => {
         )}
       >
         <div className="flex items-center p-4">
-          <div className={`w-6 h-6 rounded-full bg-${color}-400`}></div>
+          <div className={`w-6 h-6 rounded-full ${color}`}></div>
           <div className="flex-grow">
             <h3 className="text-lg ml-6 font-bold text-[#2E2C34]">
               {ticketID}

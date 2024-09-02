@@ -12,6 +12,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+
+
 const TicketPage = () => {
   const [tickets, setTickets] = useState([]);
 
@@ -121,7 +123,7 @@ const TicketPage = () => {
                 key={index}
                 date={ticket.date}
                 content={ticket.content}
-                color={ticket.status === "open" ? "green" : "red"} // This mfucking color is bugging tf
+                color={ticket.status === "open" ? "bg-green-400" : "bg-red-400"} // This mfucking color is bugging tf
               />
             ))
           ) : (
