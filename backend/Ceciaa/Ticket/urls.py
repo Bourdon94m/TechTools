@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('ticket/all', views.TicketList.as_view()),
     path('ticket/<int:ticket_id>', views.TicketById.as_view()),
+    path('ticket/update/<int:ticket_id>', views.UpdateTicketByID.as_view()),
     path('ticket/new-ticket', views.CreateTicket.as_view()),
     path('ticket/stats/current-week/', views.CurrentWeekStatsView.as_view(), name='current-week-stats'),
     path('ticket/stats/current-month/', views.CurrentMonthStatsView.as_view(), name='current-month-stats'),

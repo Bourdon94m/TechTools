@@ -35,8 +35,10 @@ class CreateTicket(generics.CreateAPIView):
     serializer_class = TicketSerializers
 
     
-    
-
+class UpdateTicketByID(generics.UpdateAPIView):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializers
+    lookup_field = "ticket_id"
 
 """
 Aggregate ticket counts by time periods.
