@@ -11,8 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 const TicketPage = () => {
   const [tickets, setTickets] = useState([]);
@@ -119,7 +127,10 @@ const TicketPage = () => {
           {filteredTickets.length > 0 ? ( // Just check if mini 1 ticket exist
             filteredTickets.map((ticket, index) => (
               <TicketCard
-                ticketID={`#${ticket.ticketID} | ${ticket.title}`}
+                // get the ticket id and make close this ticket !
+
+                ticketID={ticket.ticketID}
+                title={ticket.title}
                 key={index}
                 date={ticket.date}
                 content={ticket.content}
