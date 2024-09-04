@@ -10,7 +10,7 @@ const NewTicketButton = ({ className }) => {
   return (
     <Button className={(cn, className)}>
       <PencilIcon className="w-4 h-4" />
-      <a href="/create-ticket">New Ticket</a>
+      <a href="/create-ticket">Nouveau</a>
     </Button>
   );
 };

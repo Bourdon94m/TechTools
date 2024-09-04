@@ -3,7 +3,7 @@ import Sidebar from "@/components/layout/Dashboard/Sidebar";
 import NotificationButt from "@/components/ui/dashboard/notification-button";
 import { NewTicketButton } from "/src/components/ui/dashboard/newTicket-button.jsx";
 import SearchButton from "@/components/ui/dashboard/searchButton";
-import { format, parseISO } from 'date-fns';
+import { format, parseISO } from "date-fns";
 
 import TicketCard from "@/components/ui/dashboard/ticket-card";
 import {
@@ -13,43 +13,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 
 const TicketPage = () => {
   const [tickets, setTickets] = useState([]);
 
+  const fetchTicketFromApi = () => {
+    fetch("http://127.0.0.1:8000/ticket/all")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        const formattedTickets = data.map((ticket) => ({
+          ticketID: ticket.ticket_id || "",
+          date: ticket.creation_date
+            ? format(parseISO(ticket.creation_date), "dd/MM/yyyy")
+            : "",
+          title: ticket.title || "",
+          content: ticket.content || "",
+          status: ticket.status,
+        }));
+        setTickets(formattedTickets);
+        console.log("Tickets formatés :", formattedTickets);
+      });
+  };
+
   useEffect(() => {
-    const fetchTicketFromApi = () => {
-      fetch("http://127.0.0.1:8000/ticket/all")
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log(data);
-          // Transformer les données reçues
-          const formattedTickets = data.map((ticket) => ({
-            ticketID: ticket.ticket_id || "",
-            date: ticket.creation_date ? format(parseISO(ticket.creation_date), 'dd/MM/yyyy') : "",
-            title: ticket.title || "",
-            content: ticket.content || "",
-            status: ticket.status,
-          }));
-          setTickets(formattedTickets);
-          console.log("Tickets formatés :", formattedTickets);
-        });
-    };
     fetchTicketFromApi();
   }, []);
 
@@ -57,7 +49,6 @@ const TicketPage = () => {
   const [filteredTickets, setFilteredTickets] = useState(tickets);
   const [filterStatus, setFilterStatus] = useState("all");
 
-  // Fonction pour filtrer les tickets par statut et terme de recherche
   const filterTickets = () => {
     return tickets.filter((ticket) => {
       const matchesSearch =
@@ -67,13 +58,12 @@ const TicketPage = () => {
       const matchesStatus =
         filterStatus === "all" ||
         (filterStatus === "open" && ticket.status === "open") ||
-        (filterStatus === "closed" && ticket.status != "open");
+        (filterStatus === "closed" && ticket.status !== "open");
 
       return matchesSearch && matchesStatus;
     });
   };
 
-  // Effet pour mettre à jour les tickets filtrés
   useEffect(() => {
     setFilteredTickets(filterTickets());
   }, [searchTerm, filterStatus, tickets]);
@@ -82,9 +72,16 @@ const TicketPage = () => {
     setSearchTerm(term);
   };
 
-  // Gestionnaire pour le changement de statut
   const handleStatusChange = (value) => {
     setFilterStatus(value);
+  };
+
+  const handleTicketStatusChange = (ticketId, newStatus) => {
+    setTickets(
+      tickets.map((ticket) =>
+        ticket.ticketID === ticketId ? { ...ticket, status: newStatus } : ticket
+      )
+    );
   };
 
   return (
@@ -126,17 +123,18 @@ const TicketPage = () => {
           </Select>
         </div>
         <div className="grid gap-6 p-8">
-          {filteredTickets.length > 0 ? ( // Just check if mini 1 ticket exist
-            filteredTickets.map((ticket, index) => (
+          {filteredTickets.length > 0 ? (
+            filteredTickets.map((ticket) => (
               <TicketCard
-                // get the ticket id and make close this ticket !
-                status={ticket.status}
+                key={ticket.ticketID}
                 ticketID={ticket.ticketID}
-                title={ticket.title}
-                key={index}
                 date={ticket.date}
+                title={ticket.title}
                 content={ticket.content}
-                color={ticket.status === "open" ? "bg-green-400" : "bg-red-400"} // This mfucking color is bugging tf
+                initialStatus={ticket.status}
+                onStatusChange={(newStatus) =>
+                  handleTicketStatusChange(ticket.ticketID, newStatus)
+                }
               />
             ))
           ) : (

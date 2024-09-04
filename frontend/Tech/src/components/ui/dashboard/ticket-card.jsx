@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { PenSquare, Check, X } from "lucide-react";
 import {
@@ -13,24 +13,29 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "../use-toast";
 
-// Fonction pour obtenir la date actuelle au format jj/mm/AAAA
 const getCurrentDate = () => {
   const now = new Date();
-  const day = String(now.getDate()).padStart(2, '0');
-  const month = String(now.getMonth() + 1).padStart(2, '0'); // Les mois commencent à 0
+  const day = String(now.getDate()).padStart(2, "0");
+  const month = String(now.getMonth() + 1).padStart(2, "0");
   const year = now.getFullYear();
   return `${day}/${month}/${year}`;
 };
 
-const TicketStatusDialog = ({ ticketID, status, onConfirm, onClose }) => {
-  const isOpen = status === "open";
-  const action = isOpen ? "fermer" : "rouvrir";
+const TicketStatusDialog = ({ ticketID, status, onConfirm }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const isTicketOpen = status === "open";
+  const action = isTicketOpen ? "fermer" : "rouvrir";
+
+  const handleConfirm = () => {
+    onConfirm();
+    setIsOpen(false);
+  };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <button className="p-1 rounded border border-[#E7E7E7] justify-center items-center flex w-12">
-          {isOpen ? (
+          {isTicketOpen ? (
             <X className="text-red-500 w-4 h-4" />
           ) : (
             <Check className="text-green-500 w-4 h-4" />
@@ -45,10 +50,14 @@ const TicketStatusDialog = ({ ticketID, status, onConfirm, onClose }) => {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="sm:justify-start">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => setIsOpen(false)}
+          >
             Annuler
           </Button>
-          <Button type="button" onClick={onConfirm}>
+          <Button type="button" onClick={handleConfirm}>
             Confirmer
           </Button>
         </DialogFooter>
@@ -63,10 +72,14 @@ const TicketCard = ({
   date,
   title,
   content,
-  status,
-  color,
+  initialStatus,
 }) => {
+  const [status, setStatus] = useState(initialStatus);
   const { toast } = useToast();
+
+  const getStatusColor = (status) => {
+    return status === "open" ? "bg-green-500" : "bg-red-500";
+  };
 
   const toggleTicketStatus = async () => {
     const newStatus = status === "open" ? "closed" : "open";
@@ -79,13 +92,16 @@ const TicketCard = ({
     };
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/ticket/update/${ticketID}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updateData),
-      });
+      const response = await fetch(
+        `http://127.0.0.1:8000/ticket/update/${ticketID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updateData),
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -94,6 +110,9 @@ const TicketCard = ({
 
       const data = await response.json();
       console.log("Réponse du serveur:", data);
+
+      setStatus(newStatus);
+
       toast({
         title: "Succès",
         description: `Ticket ${newStatus === "closed" ? "fermé" : "rouvert"} !`,
@@ -103,19 +122,23 @@ const TicketCard = ({
       console.error("Erreur détaillée:", error);
       toast({
         title: "Erreur",
-        description: `Impossible de ${status === "open" ? "fermer" : "rouvrir"} le ticket. Erreur: ${error.message}`,
+        description: `Impossible de ${
+          status === "open" ? "fermer" : "rouvrir"
+        } le ticket. Erreur: ${error.message}`,
         variant: "destructive",
       });
     }
   };
 
   return (
-    <div className={cn(
-      "rounded-lg border border-[#E7E7E7] overflow-hidden shadow-lg",
-      className
-    )}>
+    <div
+      className={cn(
+        "rounded-lg border border-[#E7E7E7] overflow-hidden shadow-lg",
+        className
+      )}
+    >
       <div className="flex items-center p-4">
-        <div className={`w-6 h-6 rounded-full ${color}`}></div>
+        <div className={`w-6 h-6 rounded-full ${getStatusColor(status)}`}></div>
         <h3 className="text-lg ml-6 font-bold text-[#2E2C34]">
           #{ticketID} | {title}
         </h3>
@@ -126,7 +149,6 @@ const TicketCard = ({
         <TicketStatusDialog
           status={status}
           ticketID={ticketID}
-          onClose={() => console.log("Action annulée")}
           onConfirm={toggleTicketStatus}
         />
         <button className="p-1 rounded border border-[#E7E7E7] justify-center items-center flex w-12">
