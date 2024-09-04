@@ -30,7 +30,6 @@ SECRET_KEY = 'django-insecure-#_o=vs=nkop_wf)cghlx-)%uqf=56-l8&p_rb&ezq%#*+(9by5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.6.46", "127.0.0.1"]
 
 
 # Application definition
@@ -79,12 +78,11 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    "http://localhost:5173",  # Si c'est l'URL de votre frontend React en développement
+    "http://192.168.56.1:5173",  # L'URL de production de votre frontend React
+    "http://127.0.0.1:5173", # L'URL de production de votre frontend React
+    "http://192.168.6.87:5173"
 ]
-CORS_ALLOW_CREDENTIALS = True
-
-
 
 
 ROOT_URLCONF = 'Ceciaa.urls'

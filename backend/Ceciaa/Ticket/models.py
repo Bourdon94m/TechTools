@@ -24,7 +24,7 @@ class Ticket(models.Model):
         if not self.pk:  # Utiliser pk au lieu de ticket_id pour la vérification
             WeeklyTicketStats.increment_ticket_count()
             self.creation_date = timezone.now()
-
+        
         super().save(*args, **kwargs)  
 
     def __str__(self):

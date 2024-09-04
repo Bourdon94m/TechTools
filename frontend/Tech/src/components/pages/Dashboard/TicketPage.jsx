@@ -3,6 +3,8 @@ import Sidebar from "@/components/layout/Dashboard/Sidebar";
 import NotificationButt from "@/components/ui/dashboard/notification-button";
 import { NewTicketButton } from "/src/components/ui/dashboard/newTicket-button.jsx";
 import SearchButton from "@/components/ui/dashboard/searchButton";
+import { format, parseISO } from 'date-fns';
+
 import TicketCard from "@/components/ui/dashboard/ticket-card";
 import {
   Select,
@@ -39,7 +41,7 @@ const TicketPage = () => {
           // Transformer les données reçues
           const formattedTickets = data.map((ticket) => ({
             ticketID: ticket.ticket_id || "",
-            date: ticket.creation_date || "",
+            date: ticket.creation_date ? format(parseISO(ticket.creation_date), 'dd/MM/yyyy') : "",
             title: ticket.title || "",
             content: ticket.content || "",
             status: ticket.status,
@@ -128,7 +130,7 @@ const TicketPage = () => {
             filteredTickets.map((ticket, index) => (
               <TicketCard
                 // get the ticket id and make close this ticket !
-
+                status={ticket.status}
                 ticketID={ticket.ticketID}
                 title={ticket.title}
                 key={index}
