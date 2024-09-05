@@ -39,21 +39,30 @@ const Navbar = () => {
                     <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[200px]">
                       <li>
                         <NavigationMenuLink asChild>
-                          <a href="/teamviewer" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                          <a
+                            href="/teamviewer"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
                             Teamviewer
                           </a>
                         </NavigationMenuLink>
                       </li>
                       <li>
                         <NavigationMenuLink asChild>
-                          <a href="#" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                          <a
+                            href="#"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
                             Ticket
                           </a>
                         </NavigationMenuLink>
                       </li>
                       <li>
                         <NavigationMenuLink asChild>
-                          <a href="#" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                          <a
+                            href="#"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
                             Outil 3
                           </a>
                         </NavigationMenuLink>
@@ -69,12 +78,19 @@ const Navbar = () => {
                 <span className="text-sm">
                   Connecté en tant que {user.email}
                 </span>
-                <Button variant="outline" onClick={logout} className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <Button
+                  variant="outline"
+                  onClick={logout}
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
+                >
                   Déconnexion
                 </Button>
               </div>
             ) : (
-              <Button variant="outline" className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button
+                variant="outline"
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+              >
                 <Link to="/login">Login</Link>
               </Button>
             )}
@@ -84,14 +100,24 @@ const Navbar = () => {
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent hover:text-accent-foreground">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-foreground hover:bg-accent hover:text-accent-foreground"
+                >
                   <MenuIcon className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[200px] bg-background text-foreground">
+              <SheetContent
+                side="right"
+                className="w-[200px] bg-background text-foreground"
+              >
                 <nav className="flex flex-col space-y-4 mt-4 font-merriweather">
                   <h2 className="text-lg font-semibold mb-2">Tools</h2>
-                  <a href="/teamviewer" className="text-base hover:text-primary">
+                  <a
+                    href="/teamviewer"
+                    className="text-base hover:text-primary"
+                  >
                     Teamviewer
                   </a>
                   <a href="#" className="text-base hover:text-primary">
@@ -105,7 +131,10 @@ const Navbar = () => {
                       <span className="text-sm">
                         Connecté en tant que {user.email}
                       </span>
-                      <Button className="mt-4 bg-primary text-primary-foreground hover:bg-primary/90" onClick={logout}>
+                      <Button
+                        className="mt-4 bg-primary text-primary-foreground hover:bg-primary/90"
+                        onClick={logout}
+                      >
                         Déconnexion
                       </Button>
                     </>

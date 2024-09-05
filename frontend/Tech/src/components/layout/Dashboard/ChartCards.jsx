@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   CartesianGrid,
-  LabelList,
   XAxis,
   YAxis,
   Line,
@@ -11,8 +10,8 @@ import {
   BarChart,
   Bar,
   Area,
+  Tooltip,
 } from "recharts";
-
 import {
   Card,
   CardContent,
@@ -21,22 +20,70 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-
 import { cn } from "@/lib/utils";
 
-const chartConfig = {
-  desktop: {
-    label: "Ticket",
-    color: "var(--primary)",
-  },
-  label: {
-    color: "var(--foreground)",
-  },
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-card p-2 shadow-lg rounded-md border border-border">
+        <p className="text-sm font-semibold text-foreground">{`${label} : ${payload[0].value}`}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
+const ChartCard = ({
+  className,
+  title,
+  children,
+  startDate,
+  endDate,
+  error,
+}) => (
+  <Card className={cn("overflow-hidden bg-card shadow-lg", className)}>
+    <CardHeader className="p-4 bg-primary/5">
+      <CardTitle className="text-lg font-bold text-primary">{title}</CardTitle>
+      <CardDescription className="text-xs text-muted-foreground">
+        {startDate} - {endDate}
+      </CardDescription>
+    </CardHeader>
+    <CardContent className="p-4">
+      {error ? (
+        <div className="text-destructive p-4 text-center">{error}</div>
+      ) : (
+        children
+      )}
+    </CardContent>
+    <CardFooter className="text-xs text-muted-foreground bg-muted/20 p-2 text-center">
+      Données de la semaine en cours
+    </CardFooter>
+  </Card>
+);
+
+const fetchChartData = async (
+  setChartData,
+  setActualStartWeek,
+  setEndOfActualWeek,
+  setError
+) => {
+  try {
+    const response = await fetch(
+      "http://127.0.0.1:8000/ticket/stats/current-week/"
+    );
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    const formattedData = data.daily_stats.map((stat, index) => ({
+      day: ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"][index],
+      tickets: stat.ticket_count,
+    }));
+    setChartData(formattedData);
+    setActualStartWeek(data.week_start);
+    setEndOfActualWeek(data.week_end);
+  } catch (error) {
+    console.error("Error fetching chart data:", error);
+    setError("Impossible de charger les données. Veuillez réessayer.");
+  }
 };
 
 export function BarChartCard({ className, title }) {
@@ -46,102 +93,43 @@ export function BarChartCard({ className, title }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/ticket/stats/current-week/")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const actualStartWeek = data.week_start;
-        const endOfActualWeek = data.week_end;
-
-        const formattedData = [
-          { day: "Lundi", desktop: data.daily_stats[0].ticket_count },
-          { day: "Mardi", desktop: data.daily_stats[1].ticket_count },
-          { day: "Mercredi", desktop: data.daily_stats[2].ticket_count },
-          { day: "Jeudi", desktop: data.daily_stats[3].ticket_count },
-          { day: "Vendredi", desktop: data.daily_stats[4].ticket_count },
-          { day: "Samedi", desktop: data.daily_stats[5].ticket_count },
-          { day: "Dimanche", desktop: data.daily_stats[6].ticket_count },
-        ];
-        setChartData(formattedData);
-        setActualStartWeek(actualStartWeek);
-        setEndOfActualWeek(endOfActualWeek);
-      })
-      .catch((error) => {
-        console.error("Error fetching chart data:", error);
-        setError(error.message);
-      });
+    fetchChartData(
+      setChartData,
+      setActualStartWeek,
+      setEndOfActualWeek,
+      setError
+    );
   }, []);
 
   return (
-    <Card className={cn("overflow-hidden bg-background", className)}>
-      <CardHeader className="p-4">
-        <CardTitle className="text-lg text-primary">{title}</CardTitle>
-        <CardDescription className="text-muted-foreground">
-          Semaine du {actualStartWeek} au {endOfActualWeek}{" "}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-0">
-        {error ? (
-          <div className="text-destructive">Error: {error}</div>
-        ) : (
-          <ChartContainer className="w-full" config={chartConfig}>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={chartData}
-                layout="vertical"
-                margin={{
-                  top: 10,
-                  right: 16,
-                  left: 0,
-                  bottom: 0,
-                }}
-              >
-                <CartesianGrid horizontal={false} stroke="var(--border)" />
-                <YAxis
-                  dataKey="day"
-                  type="category"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  tickFormatter={(value) => value.slice(0, 3)}
-                  hide
-                />
-                <XAxis dataKey="desktop" type="number" hide />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent indicator="line" />}
-                />
-                <Bar dataKey="desktop" fill="var(--primary)" radius={4}>
-                  <LabelList
-                    dataKey="day"
-                    position="insideLeft"
-                    offset={8}
-                    fill="var(--background)"
-                    fontSize={12}
-                  />
-                  <LabelList
-                    dataKey="desktop"
-                    position="right"
-                    offset={8}
-                    fill="var(--foreground)"
-                    fontSize={12}
-                  />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        )}
-      </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm mt-10">
-        <div className="leading-none text-muted-foreground">
-          Showing tickets for the current week
-        </div>
-      </CardFooter>
-    </Card>
+    <ChartCard
+      className={className}
+      title={title}
+      startDate={actualStartWeek}
+      endDate={endOfActualWeek}
+      error={error}
+    >
+      <ResponsiveContainer width="100%" height={250}>
+        <BarChart
+          data={chartData}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="var(--border)"
+            opacity={0.3}
+          />
+          <XAxis
+            dataKey="day"
+            stroke="var(--muted-foreground)"
+            tick={{ fontSize: 12 }}
+          />
+          <YAxis stroke="var(--muted-foreground)" tick={{ fontSize: 12 }} />
+          <Tooltip content={<CustomTooltip />} />
+          <Bar dataKey="tickets" fill="var(--primary)" radius={[4, 4, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </ChartCard>
   );
 }
 
@@ -152,97 +140,58 @@ export function LineChartCard({ className, title }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/ticket/stats/current-week/")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const actualStartWeek = data.week_start;
-        const endOfActualWeek = data.week_end;
-
-        const formattedData = [
-          { day: "Lundi", desktop: data.daily_stats[0].ticket_count },
-          { day: "Mardi", desktop: data.daily_stats[1].ticket_count },
-          { day: "Mercredi", desktop: data.daily_stats[2].ticket_count },
-          { day: "Jeudi", desktop: data.daily_stats[3].ticket_count },
-          { day: "Vendredi", desktop: data.daily_stats[4].ticket_count },
-          { day: "Samedi", desktop: data.daily_stats[5].ticket_count },
-          { day: "Dimanche", desktop: data.daily_stats[6].ticket_count },
-        ];
-        setChartData(formattedData);
-        setActualStartWeek(actualStartWeek);
-        setEndOfActualWeek(endOfActualWeek);
-      })
-      .catch((error) => {
-        console.error("Error fetching chart data:", error);
-        setError(error.message);
-      });
+    fetchChartData(
+      setChartData,
+      setActualStartWeek,
+      setEndOfActualWeek,
+      setError
+    );
   }, []);
 
   return (
-    <Card className={cn("overflow-hidden bg-background", className)}>
-      <CardHeader className="p-4">
-        <CardTitle className="text-lg text-primary">{title}</CardTitle>
-        <CardDescription className="text-muted-foreground">
-          Semaine du {actualStartWeek} au {endOfActualWeek}{" "}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-0">
-        {error ? (
-          <div className="text-destructive">Error: {error}</div>
-        ) : (
-          <ChartContainer className="w-full" config={chartConfig}>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart
-                data={chartData}
-                margin={{
-                  top: 10,
-                  right: 12,
-                  left: 12,
-                  bottom: 0,
-                }}
-              >
-                <CartesianGrid vertical={false} stroke="var(--border)" />
-                <XAxis
-                  dataKey="day"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  tickFormatter={(value) => value.slice(0, 3)}
-                  stroke="var(--muted-foreground)"
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel />}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="desktop"
-                  stroke="var(--primary)"
-                  strokeWidth={2}
-                  dot={{
-                    fill: "var(--primary)",
-                  }}
-                  activeDot={{
-                    r: 6,
-                    fill: "var(--primary)",
-                    stroke: "var(--background)",
-                  }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        )}
-      </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm mt-10">
-        <div className="leading-none text-muted-foreground">
-          Showing ticket trend for the current week
-        </div>
-      </CardFooter>
-    </Card>
+    <ChartCard
+      className={className}
+      title={title}
+      startDate={actualStartWeek}
+      endDate={endOfActualWeek}
+      error={error}
+    >
+      <ResponsiveContainer width="100%" height={250}>
+        <LineChart
+          data={chartData}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="var(--border)"
+            opacity={0.3}
+          />
+          <XAxis
+            dataKey="day"
+            stroke="var(--muted-foreground)"
+            tick={{ fontSize: 12 }}
+          />
+          <YAxis stroke="var(--muted-foreground)" tick={{ fontSize: 12 }} />
+          <Tooltip content={<CustomTooltip />} />
+          <Line
+            type="monotone"
+            dataKey="tickets"
+            stroke="var(--primary)"
+            strokeWidth={2}
+            dot={{
+              fill: "var(--background)",
+              stroke: "var(--primary)",
+              strokeWidth: 2,
+            }}
+            activeDot={{
+              r: 8,
+              fill: "var(--primary)",
+              stroke: "var(--background)",
+            }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </ChartCard>
   );
 }
 
@@ -253,101 +202,61 @@ export function AreaChartCard({ className, title }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/ticket/stats/current-week/")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const actualStartWeek = data.week_start;
-        const endOfActualWeek = data.week_end;
-
-        const formattedData = [
-          { day: "Lundi", desktop: data.daily_stats[0].ticket_count },
-          { day: "Mardi", desktop: data.daily_stats[1].ticket_count },
-          { day: "Mercredi", desktop: data.daily_stats[2].ticket_count },
-          { day: "Jeudi", desktop: data.daily_stats[3].ticket_count },
-          { day: "Vendredi", desktop: data.daily_stats[4].ticket_count },
-          { day: "Samedi", desktop: data.daily_stats[5].ticket_count },
-          { day: "Dimanche", desktop: data.daily_stats[6].ticket_count },
-        ];
-        setChartData(formattedData);
-        setActualStartWeek(actualStartWeek);
-        setEndOfActualWeek(endOfActualWeek);
-      })
-      .catch((error) => {
-        console.error("Error fetching chart data:", error);
-        setError(error.message);
-      });
+    fetchChartData(
+      setChartData,
+      setActualStartWeek,
+      setEndOfActualWeek,
+      setError
+    );
   }, []);
 
   return (
-    <Card className={cn("overflow-hidden bg-background", className)}>
-      <CardHeader className="p-4">
-        <CardTitle className="text-lg text-primary">{title}</CardTitle>
-        <CardDescription className="text-muted-foreground">
-          Semaine du {actualStartWeek} au {endOfActualWeek}{" "}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-0">
-        {error ? (
-          <div className="text-destructive">Error: {error}</div>
-        ) : (
-          <ChartContainer className="w-full" config={chartConfig}>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart
-                data={chartData}
-                margin={{
-                  top: 10,
-                  right: 12,
-                  left: 12,
-                  bottom: 0,
-                }}
-              >
-                <CartesianGrid vertical={false} stroke="var(--border)" />
-                <XAxis
-                  dataKey="day"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  tickFormatter={(value) => value.slice(0, 3)}
-                  stroke="var(--muted-foreground)"
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel />}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="desktop"
-                  stroke="var(--primary)"
-                  fill="var(--primary)"
-                  fillOpacity={0.2}
-                  strokeWidth={2}
-                  dot={{
-                    fill: "var(--primary)",
-                    stroke: "var(--background)",
-                  }}
-                  activeDot={{
-                    r: 6,
-                    fill: "var(--primary)",
-                    stroke: "var(--background)",
-                  }}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        )}
-      </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm mt-10">
-        <div className="leading-none text-muted-foreground">
-          Showing ticket trend for the current week
-        </div>
-      </CardFooter>
-    </Card>
+    <ChartCard
+      className={className}
+      title={title}
+      startDate={actualStartWeek}
+      endDate={endOfActualWeek}
+      error={error}
+    >
+      <ResponsiveContainer width="100%" height={250}>
+        <AreaChart
+          data={chartData}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="var(--border)"
+            opacity={0.3}
+          />
+          <XAxis
+            dataKey="day"
+            stroke="var(--muted-foreground)"
+            tick={{ fontSize: 12 }}
+          />
+          <YAxis stroke="var(--muted-foreground)" tick={{ fontSize: 12 }} />
+          <Tooltip content={<CustomTooltip />} />
+          <Area
+            type="monotone"
+            dataKey="tickets"
+            stroke="var(--primary)"
+            fill="var(--primary)"
+            fillOpacity={0.2}
+            strokeWidth={2}
+            dot={{
+              fill: "var(--background)",
+              stroke: "var(--primary)",
+              strokeWidth: 2,
+            }}
+            activeDot={{
+              r: 8,
+              fill: "var(--primary)",
+              stroke: "var(--background)",
+            }}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </ChartCard>
   );
 }
 
-export default { BarChartCard, AreaChartCard, LineChartCard };
+export default { BarChartCard, LineChartCard, AreaChartCard };
