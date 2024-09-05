@@ -5,8 +5,6 @@ import {
   LayoutDashboard,
   Ticket,
   Settings,
-  ChevronLeft,
-  ChevronRight,
   Menu,
 } from "lucide-react";
 import {
@@ -16,16 +14,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import ThemeSelector from "@/components/ui/dashboard/ThemeSelector"; // Assurez-vous que le chemin d'importation est correct
 
 const SidebarContent = ({ collapsed, setCollapsed }) => {
   return (
     <div
       className={cn(
         "flex flex-col h-full",
-        collapsed ? "items-center" : "p-4 space-y-4"
+        collapsed ? "items-center" : "p-4"
       )}
     >
-      <div className="flex items-center justify-center mb-8">
+      <div className="flex items-center p-4 justify-center mb-8">
         {!collapsed && (
           <span className="text-2xl font-MrRobot">
             <a href="/">Ticket Panel</a>
@@ -51,7 +50,7 @@ const SidebarContent = ({ collapsed, setCollapsed }) => {
             <TooltipTrigger asChild>
               <Button variant="ghost" className="w-full justify-start">
                 <Ticket className="h-5 w-5 mr-2" />
-                {!collapsed && <a href="tickets">tickets</a>}
+                {!collapsed && <a href="tickets">Tickets</a>}
               </Button>
             </TooltipTrigger>
             {collapsed && <TooltipContent side="right">Tickets</TooltipContent>}
@@ -70,6 +69,27 @@ const SidebarContent = ({ collapsed, setCollapsed }) => {
           </Tooltip>
         </TooltipProvider>
       </nav>
+
+      {/* ThemeSelector placé en bas */}
+      <div className={cn(
+        "mt-auto pt-4",
+        collapsed ? "w-full flex justify-center" : ""
+      )}>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className={collapsed ? "w-10 h-10" : "w-full"}>
+                <ThemeSelector />
+              </div>
+            </TooltipTrigger>
+            {collapsed && (
+              <TooltipContent side="right">Change Theme</TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+
+      
     </div>
   );
 };
@@ -82,7 +102,8 @@ const Sidebar = ({ className }) => {
       {/* Version desktop */}
       <div
         className={cn(
-          "relative min-h-screen bg-background border-r hidden md:block lg:block p-4",
+          "relative h-screen bg-background border-r hidden md:block lg:block transition-all duration-300",
+          collapsed ? "w-20" : "w-64",
           className
         )}
       >
@@ -100,7 +121,7 @@ const Sidebar = ({ className }) => {
             <Menu className="h-4 w-4" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-[300px] sm:w-[300px]">
+        <SheetContent side="left" className="w-[300px] sm:w-[300px] p-0">
           <SidebarContent collapsed={false} setCollapsed={() => {}} />
         </SheetContent>
       </Sheet>

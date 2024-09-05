@@ -29,6 +29,13 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+
+    /* Nouvelles variables pour le thème light */
+    --text: 222 14% 8%;
+    --background-custom: 220 33% 97%;
+    --primary-custom: 222 55% 52%;
+    --secondary-custom: 220 24% 74%;
+    --accent-custom: 222 71% 64%;
   }
 
   .dark {
@@ -56,6 +63,29 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    /* Nouvelles variables pour le thème dark */
+    --text: 84 65% 92%;
+    --background-custom: 180 4% 3%;
+    --primary-custom: 83 41% 71%;
+    --secondary-custom: 221 41% 30%;
+    --accent-custom: 287 33% 54%;
+  }
+
+  [data-theme="forest"] {
+    --text: 83 100% 93%;
+    --background: 105 87% 7%;
+    --primary: 83 100% 75%;
+    --secondary: 141 97% 34%;
+    --accent: 141 93% 58%;
+  }
+
+  [data-theme="volcano"] {
+    --text: 330 100% 95%;
+    --background: 330 100% 5%;
+    --primary: 330 100% 71%;
+    --secondary: 347 100% 34%;
+    --accent: 354 100% 53%;
   }
 }
 

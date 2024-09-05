@@ -32,10 +32,10 @@ import { cn } from "@/lib/utils";
 const chartConfig = {
   desktop: {
     label: "Ticket",
-    color: "hsl(var(--chart-3))",
+    color: "var(--primary)",
   },
   label: {
-    color: "hsl(var(--background))",
+    color: "var(--foreground)",
   },
 };
 
@@ -57,7 +57,6 @@ export function BarChartCard({ className, title }) {
         const actualStartWeek = data.week_start;
         const endOfActualWeek = data.week_end;
 
-        // Assurez-vous que les données sont dans le format attendu
         const formattedData = [
           { day: "Lundi", desktop: data.daily_stats[0].ticket_count },
           { day: "Mardi", desktop: data.daily_stats[1].ticket_count },
@@ -67,12 +66,9 @@ export function BarChartCard({ className, title }) {
           { day: "Samedi", desktop: data.daily_stats[5].ticket_count },
           { day: "Dimanche", desktop: data.daily_stats[6].ticket_count },
         ];
-        // Set data into some useful useState
         setChartData(formattedData);
         setActualStartWeek(actualStartWeek);
         setEndOfActualWeek(endOfActualWeek);
-        console.log("Le formatted data que tu veux mettre : ", formattedData);
-        console.log("Le chartdata qu'il ya: ", chartData);
       })
       .catch((error) => {
         console.error("Error fetching chart data:", error);
@@ -81,16 +77,16 @@ export function BarChartCard({ className, title }) {
   }, []);
 
   return (
-    <Card className={cn("overflow-hidden", className)}>
+    <Card className={cn("overflow-hidden bg-background", className)}>
       <CardHeader className="p-4">
-        <CardTitle className="text-lg">{title}</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-lg text-primary">{title}</CardTitle>
+        <CardDescription className="text-muted-foreground">
           Semaine du {actualStartWeek} au {endOfActualWeek}{" "}
         </CardDescription>
       </CardHeader>
       <CardContent className="p-0">
         {error ? (
-          <div className="text-red-500">Error: {error}</div>
+          <div className="text-destructive">Error: {error}</div>
         ) : (
           <ChartContainer className="w-full" config={chartConfig}>
             <ResponsiveContainer width="100%" height={300}>
@@ -104,7 +100,7 @@ export function BarChartCard({ className, title }) {
                   bottom: 0,
                 }}
               >
-                <CartesianGrid horizontal={false} />
+                <CartesianGrid horizontal={false} stroke="var(--border)" />
                 <YAxis
                   dataKey="day"
                   type="category"
@@ -119,19 +115,19 @@ export function BarChartCard({ className, title }) {
                   cursor={false}
                   content={<ChartTooltipContent indicator="line" />}
                 />
-                <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4}>
+                <Bar dataKey="desktop" fill="var(--primary)" radius={4}>
                   <LabelList
                     dataKey="day"
                     position="insideLeft"
                     offset={8}
-                    className="fill-[--color-label]"
+                    fill="var(--background)"
                     fontSize={12}
                   />
                   <LabelList
                     dataKey="desktop"
                     position="right"
                     offset={8}
-                    className="fill-foreground"
+                    fill="var(--foreground)"
                     fontSize={12}
                   />
                 </Bar>
@@ -167,7 +163,6 @@ export function LineChartCard({ className, title }) {
         const actualStartWeek = data.week_start;
         const endOfActualWeek = data.week_end;
 
-        // Assurez-vous que les données sont dans le format attendu
         const formattedData = [
           { day: "Lundi", desktop: data.daily_stats[0].ticket_count },
           { day: "Mardi", desktop: data.daily_stats[1].ticket_count },
@@ -177,12 +172,9 @@ export function LineChartCard({ className, title }) {
           { day: "Samedi", desktop: data.daily_stats[5].ticket_count },
           { day: "Dimanche", desktop: data.daily_stats[6].ticket_count },
         ];
-        // Set data into some useful useState
         setChartData(formattedData);
         setActualStartWeek(actualStartWeek);
         setEndOfActualWeek(endOfActualWeek);
-        console.log("Le formatted data que tu veux mettre : ", formattedData);
-        console.log("Le chartdata qu'il ya: ", chartData);
       })
       .catch((error) => {
         console.error("Error fetching chart data:", error);
@@ -191,52 +183,59 @@ export function LineChartCard({ className, title }) {
   }, []);
 
   return (
-    <Card className={cn("overflow-hidden", className)}>
+    <Card className={cn("overflow-hidden bg-background", className)}>
       <CardHeader className="p-4">
-        <CardTitle className="text-lg">{title}</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-lg text-primary">{title}</CardTitle>
+        <CardDescription className="text-muted-foreground">
           Semaine du {actualStartWeek} au {endOfActualWeek}{" "}
         </CardDescription>
       </CardHeader>
       <CardContent className="p-0">
-        <ChartContainer className="w-full" config={chartConfig}>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart
-              data={chartData}
-              margin={{
-                top: 10,
-                right: 12,
-                left: 12,
-                bottom: 0,
-              }}
-            >
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="month"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                tickFormatter={(value) => value.slice(0, 3)}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
-              <Line
-                type="monotone"
-                dataKey="desktop"
-                stroke="var(--color-desktop)"
-                strokeWidth={2}
-                dot={{
-                  fill: "var(--color-desktop)",
+        {error ? (
+          <div className="text-destructive">Error: {error}</div>
+        ) : (
+          <ChartContainer className="w-full" config={chartConfig}>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart
+                data={chartData}
+                margin={{
+                  top: 10,
+                  right: 12,
+                  left: 12,
+                  bottom: 0,
                 }}
-                activeDot={{
-                  r: 6,
-                }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </ChartContainer>
+              >
+                <CartesianGrid vertical={false} stroke="var(--border)" />
+                <XAxis
+                  dataKey="day"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(value) => value.slice(0, 3)}
+                  stroke="var(--muted-foreground)"
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel />}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="desktop"
+                  stroke="var(--primary)"
+                  strokeWidth={2}
+                  dot={{
+                    fill: "var(--primary)",
+                  }}
+                  activeDot={{
+                    r: 6,
+                    fill: "var(--primary)",
+                    stroke: "var(--background)",
+                  }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        )}
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm mt-10">
         <div className="leading-none text-muted-foreground">
@@ -265,7 +264,6 @@ export function AreaChartCard({ className, title }) {
         const actualStartWeek = data.week_start;
         const endOfActualWeek = data.week_end;
 
-        // Assurez-vous que les données sont dans le format attendu
         const formattedData = [
           { day: "Lundi", desktop: data.daily_stats[0].ticket_count },
           { day: "Mardi", desktop: data.daily_stats[1].ticket_count },
@@ -275,12 +273,9 @@ export function AreaChartCard({ className, title }) {
           { day: "Samedi", desktop: data.daily_stats[5].ticket_count },
           { day: "Dimanche", desktop: data.daily_stats[6].ticket_count },
         ];
-        // Set data into some useful useState
         setChartData(formattedData);
         setActualStartWeek(actualStartWeek);
         setEndOfActualWeek(endOfActualWeek);
-        console.log("Le formatted data que tu veux mettre : ", formattedData);
-        console.log("Le chartdata qu'il ya: ", chartData);
       })
       .catch((error) => {
         console.error("Error fetching chart data:", error);
@@ -289,53 +284,62 @@ export function AreaChartCard({ className, title }) {
   }, []);
 
   return (
-    <Card className={cn("overflow-hidden", className)}>
+    <Card className={cn("overflow-hidden bg-background", className)}>
       <CardHeader className="p-4">
-        <CardTitle className="text-lg">{title}</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-lg text-primary">{title}</CardTitle>
+        <CardDescription className="text-muted-foreground">
           Semaine du {actualStartWeek} au {endOfActualWeek}{" "}
         </CardDescription>
       </CardHeader>
       <CardContent className="p-0">
-        <ChartContainer className="w-full" config={chartConfig}>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart
-              data={chartData}
-              margin={{
-                top: 10,
-                right: 12,
-                left: 12,
-                bottom: 0,
-              }}
-            >
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="month"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                tickFormatter={(value) => value.slice(0, 3)}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
-              <Area
-                type="monotone"
-                dataKey="desktop"
-                stroke="var(--color-desktop)"
-                fill="var(--color-desktop)"
-                strokeWidth={2}
-                dot={{
-                  fill: "var(--color-desktop)",
+        {error ? (
+          <div className="text-destructive">Error: {error}</div>
+        ) : (
+          <ChartContainer className="w-full" config={chartConfig}>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart
+                data={chartData}
+                margin={{
+                  top: 10,
+                  right: 12,
+                  left: 12,
+                  bottom: 0,
                 }}
-                activeDot={{
-                  r: 6,
-                }}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </ChartContainer>
+              >
+                <CartesianGrid vertical={false} stroke="var(--border)" />
+                <XAxis
+                  dataKey="day"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(value) => value.slice(0, 3)}
+                  stroke="var(--muted-foreground)"
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel />}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="desktop"
+                  stroke="var(--primary)"
+                  fill="var(--primary)"
+                  fillOpacity={0.2}
+                  strokeWidth={2}
+                  dot={{
+                    fill: "var(--primary)",
+                    stroke: "var(--background)",
+                  }}
+                  activeDot={{
+                    r: 6,
+                    fill: "var(--primary)",
+                    stroke: "var(--background)",
+                  }}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        )}
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm mt-10">
         <div className="leading-none text-muted-foreground">
