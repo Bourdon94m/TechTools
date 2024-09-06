@@ -35,7 +35,7 @@ const Navbar = () => {
                   <NavigationMenuTrigger className="text-base font-medium bg-background text-foreground hover:bg-secondary hover:text-secondary-foreground">
                     Tools
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="bg-background border border-border">
+                  <NavigationMenuContent className="bg-background border border-border text-primary">
                     <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[200px]">
                       <li>
                         <NavigationMenuLink asChild>

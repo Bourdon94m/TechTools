@@ -139,10 +139,10 @@ const TicketCard = ({
     >
       <div className="flex items-center p-4">
         <div className={`w-6 h-6 rounded-full ${getStatusColor(status)}`}></div>
-        <h3 className="text-lg ml-6 font-bold text-[#2E2C34]">
+        <h3 className="text-lg ml-6 font-bold text-primary">
           #{ticketID} | {title}
         </h3>
-        <span className="text-xs text-[#84818A] ml-auto">{date}</span>
+        <span className="text-xs text-priamry ml-auto">{date}</span>
       </div>
       <p className="px-4 pb-2 text-sm text-[#84818A]">{content}</p>
       <div className="flex justify-end p-2 space-x-2">

@@ -40,17 +40,9 @@ const LandingDashboard = () => {
             title="Tickets de cet semaine"
           />
         </div>
-        <div className="h-[30rem] flex-col justify-between w-full  space-y-4 mt-4 bg-">
+        <div className="h-[30rem] flex-col justify-between w-full  space-y-6 mt-4 bg-">
           <h1 className="text-2xl md:text-3l">Tickets Recents :</h1>
-          <RecentTicket
-            title={"Création de compte Pacca"}
-            author={"Martine"}
-            date={getFormattedDateToday()}
-            isOpen={true}
-            avatarUrl={
-              "https://cdn.pixabay.com/photo/2023/11/01/11/15/cable-car-8357178_640.jpg"
-            }
-          />
+
           <RecentTicket
             title={"Support Jaws nécéssaire"}
             author={"Florian"}
