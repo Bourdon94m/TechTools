@@ -5,9 +5,11 @@ from django.contrib.auth.hashers import make_password # hashage
 from .serializers import UserSerializers
 from rest_framework.views import APIView #JWT
 from rest_framework.response import Response #JWT
-from rest_framework.permissions import IsAuthenticated #JWT
-from rest_framework_simplejwt.views import TokenObtainPairView #JWT
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView #JWT
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer #JWT
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError  #JWT
+
+
 from django.contrib.auth import authenticate
 from rest_framework import status # Rest Framework
 # Create your views here.
@@ -88,3 +90,16 @@ class RegisterView(APIView):
             user = serializer.create(validated_data)
             return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+class CustomTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
