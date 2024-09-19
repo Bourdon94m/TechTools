@@ -4,54 +4,75 @@ import Sidebar from "../../layout/Dashboard/Sidebar";
 import NotificationButton from "../../ui/dashboard/notification-button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { CreateTicketButton } from "@/components/ui/dashboard/newTicket-button";
 import { useToast } from "@/components/ui/use-toast";
 
 const CreateTicketPage = () => {
   const { toast } = useToast();
+  const MAX_TEXT_LENGTH = 150;
+  const [isContentValid, setIsContentValid] = useState(false);
+  const [content, setContent] = useState("");
+
+  useEffect(() => {
+    setIsContentValid(content.length <= MAX_TEXT_LENGTH);
+  }, [content]);
+
+  const isTicketContentValid = () => {
+    content.length > MAX_TEXT_LENGTH
+      ? setIsContentValid(false)
+      : setIsContentValid(true);
+    console.log(content.length);
+  };
 
   const createTicketToDB = () => {
     let title = document.getElementById("title").value;
-    let content = document.getElementById("content").value;
 
     const ticketData = { title, content };
 
-    fetch("http://127.0.0.1:8000/ticket/new-ticket", {
-      method: "POST", // Pour envoyer
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(ticketData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `La requête a échoué avec le statut : ${response.status}`
-          );
-        }
-        return response.json();
+    if (isContentValid) {
+      fetch("http://127.0.0.1:8000/ticket/new-ticket", {
+        method: "POST", // Pour envoyer
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(ticketData),
       })
-      .then((data) => {
-        console.log("Succès:", data);
-        // Message de succées
-        toast({
-          title: "Succées",
-          description: "Ticket crée !",
-          variant: "primary",
-        });
-      })
-      .catch((error) => {
-        console.error("Erreur:", error);
-        // messages
-        toast({
-          title: "Erreur",
-          description: "Impossible de récupérer les données de l'utilisateur",
-          variant: "destructive",
-        });
-      });
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              `La requête a échoué avec le statut : ${response.status}`
+            );
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Succès:", data);
+          // Message de succées
+          toast({
+            title: "Succées",
+            description: "Ticket crée !",
+            variant: "primary",
+          });
+        })
+        .catch((error) => {
+          console.error("Erreur:", error);
 
-    console.log("Données envoyées:", ticketData);
+          // messages
+          toast({
+            title: "Erreur",
+            description: "Impossible de récupérer les données de l'utilisateur",
+            variant: "destructive",
+          });
+        });
+
+      console.log("Données envoyées:", ticketData);
+    }
+    // messages
+    toast({
+      title: "Texte trop long",
+      description: `Le texte ne doit pas dépasser  ${MAX_TEXT_LENGTH} caracteres `,
+      variant: "destructive",
+    });
   };
 
   return (
@@ -112,12 +133,27 @@ const CreateTicketPage = () => {
               </label>
               <Textarea
                 id="content"
+                onChange={(e) => {
+                  setContent(e.target.value);
+                }}
+                value={content}
                 rows={10}
                 placeholder="Probleme Jaws sur ..."
                 className="w-full resize-y min-h-[150px]"
               />
             </div>
 
+            <div className="flex justify-end">
+              {isContentValid ? (
+                <p className="text-green-400 font-medium">
+                  {content.length} / {MAX_TEXT_LENGTH}{" "}
+                </p>
+              ) : (
+                <p className="fon text-red-400 font-medium">
+                  {content.length} / {MAX_TEXT_LENGTH}{" "}
+                </p>
+              )}
+            </div>
             <div className="flex justify-end">
               <CreateTicketButton
                 onClick={createTicketToDB}
