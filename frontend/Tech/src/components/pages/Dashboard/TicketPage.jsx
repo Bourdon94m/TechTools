@@ -4,7 +4,6 @@ import NotificationButt from "@/components/ui/dashboard/notification-button";
 import { NewTicketButton } from "/src/components/ui/dashboard/newTicket-button.jsx";
 import SearchButton from "@/components/ui/dashboard/searchButton";
 import { format, parseISO } from "date-fns";
-
 import TicketCard from "@/components/ui/dashboard/ticket-card";
 import {
   Select,
@@ -13,9 +12,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const TicketPage = () => {
   const [tickets, setTickets] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredTickets, setFilteredTickets] = useState([]);
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ticketsPerPage = 3;
 
   const fetchTicketFromApi = () => {
     fetch("http://127.0.0.1:8000/ticket/all")
@@ -37,17 +49,12 @@ const TicketPage = () => {
           status: ticket.status,
         }));
         setTickets(formattedTickets);
-        console.log("Tickets formatés :", formattedTickets);
       });
   };
 
   useEffect(() => {
     fetchTicketFromApi();
   }, []);
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredTickets, setFilteredTickets] = useState(tickets);
-  const [filterStatus, setFilterStatus] = useState("all");
 
   const filterTickets = () => {
     return tickets.filter((ticket) => {
@@ -66,6 +73,7 @@ const TicketPage = () => {
 
   useEffect(() => {
     setFilteredTickets(filterTickets());
+    setCurrentPage(1); // Reset to first page when filters change
   }, [searchTerm, filterStatus, tickets]);
 
   const handleSearch = (term) => {
@@ -84,20 +92,31 @@ const TicketPage = () => {
     );
   };
 
+  // Pagination logic
+  const indexOfLastTicket = currentPage * ticketsPerPage;
+  const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
+  const currentTickets = filteredTickets.slice(
+    indexOfFirstTicket,
+    indexOfLastTicket
+  );
+  const totalPages = Math.ceil(filteredTickets.length / ticketsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen font-merriweather">
       <Sidebar className="w-full md:w-64 flex-shrink-0" />
       <div className="flex-grow">
         <div className="h-28 w-full merriweather flex items-center justify-between px-8">
           <div className="w-1/3"></div>
-          <h1 className="text-primary text-3xl  font-bold w-1/3 text-center">
+          <h1 className="text-primary text-3xl font-bold w-1/3 text-center">
             Welcome!
           </h1>
           <div className="w-1/3 flex justify-end">
             <NotificationButt />
           </div>
         </div>
-        <div className="h-20 w-full  flex justify-between items-center">
+        <div className="h-20 w-full flex justify-between items-center">
           <h1 className="text-3xl ml-8 font-bold">Tickets</h1>
           <NewTicketButton
             className={
@@ -123,8 +142,8 @@ const TicketPage = () => {
           </Select>
         </div>
         <div className="grid gap-6 p-8">
-          {filteredTickets.length > 0 ? (
-            filteredTickets.map((ticket) => (
+          {currentTickets.length > 0 ? (
+            currentTickets.map((ticket) => (
               <TicketCard
                 key={ticket.ticketID}
                 ticketID={ticket.ticketID}
@@ -142,6 +161,34 @@ const TicketPage = () => {
               Aucun ticket ne correspond à votre recherche.
             </div>
           )}
+        </div>
+        <div className="flex justify-center pb-8">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                />
+              </PaginationItem>
+              {[...Array(totalPages)].map((_, index) => (
+                <PaginationItem key={index}>
+                  <PaginationLink
+                    onClick={() => paginate(index + 1)}
+                    isActive={currentPage === index + 1}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
       </div>
     </div>
