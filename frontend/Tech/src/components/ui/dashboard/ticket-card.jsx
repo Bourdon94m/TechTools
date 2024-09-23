@@ -73,6 +73,7 @@ const TicketCard = ({
   title,
   content,
   initialStatus,
+  onButtonClick,
 }) => {
   const [status, setStatus] = useState(initialStatus);
   const { toast } = useToast();
@@ -151,7 +152,10 @@ const TicketCard = ({
           ticketID={ticketID}
           onConfirm={toggleTicketStatus}
         />
-        <button className="p-1 rounded border border-[#E7E7E7] justify-center items-center flex w-12">
+        <button
+          onClick={onButtonClick}
+          className="p-1 rounded border border-[#E7E7E7] justify-center items-center flex w-12"
+        >
           <PenSquare className="text-orange-500 w-4 h-4" />
         </button>
       </div>
