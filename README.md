@@ -57,9 +57,24 @@ Avant de commencer, assurez-vous d'avoir installé :
    ```bash
    cd backend
    pip install -r requirements.txt
+
+   ```
+5. crée le fichier .env :
+
+   ```bash
+   touch .env
+   ```
+   
+   ```bash
+   DB_NAME=EXAMPLE
+   USER=EXAMPLE
+   PASSWORD=EXAMPLE
+   HOST=EXAMPLE
+   PORT=EXAMPLE
    ```
 
-5. Lancez le serveur Django :
+
+6. Lancez le serveur Django :
    ```bash
    cd Ceciaa
    python manage.py runserver
