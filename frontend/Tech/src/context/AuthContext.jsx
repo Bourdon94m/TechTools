@@ -38,7 +38,10 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       localStorage.setItem("accessToken", data.access);
       const decodedToken = jwtDecode(data.access);
-      setUser(decodedToken);
+      setUser({
+        ...decodedToken,
+        is_superuser: decodedToken.is_superuser
+      });
       return true;
     } catch (error) {
       console.error("Erreur lors du rafraîchissement du token", error);
@@ -51,7 +54,10 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("accessToken");
     if (token && checkTokenValidity(token)) {
       const decodedToken = jwtDecode(token);
-      setUser(decodedToken);
+      setUser({
+        ...decodedToken,
+        is_superuser: decodedToken.is_superuser
+      });
     } else if (await refreshToken()) {
       // Token refreshed successfully
     } else {
@@ -93,7 +99,10 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("accessToken", data.access);
       localStorage.setItem("refreshToken", data.refresh);
       const decodedToken = jwtDecode(data.access);
-      setUser(decodedToken);
+      setUser({
+        ...decodedToken,
+        is_superuser: decodedToken.is_superuser // Assurez-vous que ce champ est inclus dans le token JWT côté backend
+      });
       return { success: true };
     } catch (error) {
       console.error("Erreur de connexion", error);
@@ -107,9 +116,13 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   }, []);
 
+  const isSuperuser = useCallback(() => {
+    return user?.is_superuser === true;
+  }, [user]);
+
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, refreshToken, loading }}
+      value={{ user, login, logout, refreshToken, loading, isSuperuser }}
     >
       {children}
     </AuthContext.Provider>

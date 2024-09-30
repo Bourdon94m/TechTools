@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,10 +12,19 @@ import {
 } from "@/components/ui/card";
 import { ArrowRight, Monitor, Ticket, Wrench } from "lucide-react";
 import { Helmet } from "react-helmet";
-import { AuthContext } from "@/context/AuthContext"; // Assurez-vous que le chemin est correct
+import { AuthContext } from "@/context/AuthContext";
 
 const LandingPage = () => {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading, isSuperuser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleMainButtonClick = () => {
+    if (user) {
+      navigate("/dashboard");
+    } else {
+      navigate("/login");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -35,37 +45,41 @@ const LandingPage = () => {
           <Button
             size="lg"
             className="bg-primary text-primary-foreground hover:bg-primary/90"
+            onClick={handleMainButtonClick}
           >
-            {user ? "Découvrir nos outils" : "Se connecter"}
+            {user ? "Accéder au tableau de bord" : "Se connecter"}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </section>
 
         {user && !loading && (
           <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-16 font-merriweather">
-            <Card className="bg-card text-card-foreground">
-              <CardHeader>
-                <Monitor className="h-8 w-8 mb-2 text-primary" />
-                <CardTitle className="text-primary">Teamviewer</CardTitle>
-                <CardDescription className="text-muted-foreground">
-                  Assistance à distance rapide et sécurisée
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>
-                  Connectez-vous aux postes distants en quelques clics pour un
-                  support efficace.
-                </p>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  variant="outline"
-                  className="text-primary hover:bg-primary hover:text-primary-foreground"
-                >
-                  <a href="/teamviewer">Accéder</a>
-                </Button>
-              </CardFooter>
-            </Card>
+            {isSuperuser() && (
+              <Card className="bg-card text-card-foreground">
+                <CardHeader>
+                  <Monitor className="h-8 w-8 mb-2 text-primary" />
+                  <CardTitle className="text-primary">Teamviewer</CardTitle>
+                  <CardDescription className="text-muted-foreground">
+                    Assistance à distance rapide et sécurisée
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    Connectez-vous aux postes distants en quelques clics pour un
+                    support efficace.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button
+                    variant="outline"
+                    className="text-primary hover:bg-primary hover:text-primary-foreground"
+                    onClick={() => navigate("/teamviewer")}
+                  >
+                    Accéder
+                  </Button>
+                </CardFooter>
+              </Card>
+            )}
 
             <Card className="bg-card text-card-foreground">
               <CardHeader>
@@ -87,35 +101,39 @@ const LandingPage = () => {
                 <Button
                   variant="outline"
                   className="text-primary hover:bg-primary hover:text-primary-foreground"
+                  onClick={() => navigate("/dashboard")}
                 >
-                  <a href="/dashboard">Accéder</a>
+                  Accéder
                 </Button>
               </CardFooter>
             </Card>
 
-            <Card className="bg-card text-card-foreground">
-              <CardHeader>
-                <Wrench className="h-8 w-8 mb-2 text-primary" />
-                <CardTitle className="text-primary">Autres Outils</CardTitle>
-                <CardDescription className="text-muted-foreground">
-                  Suite complète d'outils IT
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>
-                  Découvrez notre gamme d'outils spécialisés pour optimiser
-                  votre travail.
-                </p>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  variant="outline"
-                  className="text-primary hover:bg-primary hover:text-primary-foreground"
-                >
-                  Explorer
-                </Button>
-              </CardFooter>
-            </Card>
+            {isSuperuser() && (
+              <Card className="bg-card text-card-foreground">
+                <CardHeader>
+                  <Wrench className="h-8 w-8 mb-2 text-primary" />
+                  <CardTitle className="text-primary">Autres Outils</CardTitle>
+                  <CardDescription className="text-muted-foreground">
+                    Suite complète d'outils IT
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    Découvrez notre gamme d'outils spécialisés pour optimiser
+                    votre travail.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button
+                    variant="outline"
+                    className="text-primary hover:bg-primary hover:text-primary-foreground"
+                    onClick={() => navigate("/tools")}
+                  >
+                    Explorer
+                  </Button>
+                </CardFooter>
+              </Card>
+            )}
           </section>
         )}
 
@@ -132,8 +150,9 @@ const LandingPage = () => {
             size="lg"
             variant="default"
             className="bg-primary text-primary-foreground hover:bg-primary/90"
+            onClick={handleMainButtonClick}
           >
-            {user ? "Commencer" : "Se connecter"}
+            {user ? "Accéder au tableau de bord" : "Se connecter"}
           </Button>
         </section>
       </main>
