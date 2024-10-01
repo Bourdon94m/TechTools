@@ -6,6 +6,34 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isSuperuser, setIsSuperuser] = useState(false);
+
+
+  const checkSuperuserStatus = useCallback(async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return false
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/check-superuser/", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error("Failed to check superuser status");
+
+      const data = await response.json();
+      setIsSuperuser(data.is_superuser);
+      return data.is_superuser;
+
+    } catch (error) {
+      console.error("Erreur lors de la vérification du statut superuser", error);
+      setIsSuperuser(false);
+      return false;
+    }
+
+  }, [])
 
   const checkTokenValidity = useCallback((token) => {
     if (!token) return false;
@@ -53,12 +81,12 @@ export const AuthProvider = ({ children }) => {
       const decodedToken = jwtDecode(token);
       setUser(decodedToken);
     } else if (await refreshToken()) {
-      // Token refreshed successfully
+      await checkSuperuserStatus();
     } else {
       logout();
     }
     setLoading(false);
-  }, [checkTokenValidity, refreshToken]);
+  }, [checkTokenValidity, refreshToken, checkSuperuserStatus]);
 
   useEffect(() => {
     initAuth();
@@ -109,7 +137,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, refreshToken, loading }}
+      value={{ user, login, logout, refreshToken, loading, isSuperuser, checkSuperuserStatus }}
     >
       {children}
     </AuthContext.Provider>

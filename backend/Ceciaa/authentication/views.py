@@ -3,6 +3,9 @@ from rest_framework import generics
 from .models import CustomUser
 from django.contrib.auth.hashers import make_password # hashage 
 from .serializers import UserSerializers
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView #JWT
 from rest_framework.response import Response #JWT
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView #JWT
@@ -103,3 +106,10 @@ class CustomTokenRefreshView(TokenRefreshView):
             raise InvalidToken(e.args[0])
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+
+class CheckSuperuserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({'is_superuser': request.user.is_superuser})
